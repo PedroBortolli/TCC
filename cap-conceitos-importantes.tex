@@ -1,0 +1,83 @@
+%% ------------------------------------------------------------------------- %%
+\chapter{Conceitos importantes}
+\label{cap:conceitos-importantes}
+
+Neste capítulo serão apresentados brevemente alguns conceitos de suma importância 
+para a compreensão do trabalho. Entretanto, já é suposto que o leitor tenha um 
+conhecimento básico sobre os temas listados a seguir.
+
+\section{Grafo}
+
+Conjunto de vértices conectados por arestas.
+
+\section{Caminho}
+
+Conjunto de arestas que ligam vértices de um grafo. Em um caminho é possível 
+partir de um vértice $a$ e chegar em um vértice $b$, sem revisitar nenhum 
+vértice pertencente ao caminho ou caminhar sobre a mesma aresta mais de uma vez.
+
+\section{Árvore}
+
+Caso especial de um grafo, onde quaisquer 2 vértices estão conectados por apenas 
+um único caminho.
+
+\section{Profundidade} 
+
+A profundidade de um vértice em uma árvore enraizada é dada pelo tamanho de seu caminho
+até a raiz - isto é, quantidade de vértices pertencente à este caminho . A profundidade da raiz é sempre 1.
+
+\section{Complexidade de um algoritmo}
+
+Existem algumas definições diferentes para medir a complexidade de um 
+algoritmo, acompanhadas de notações distintas. Por exemplo, pode-se avaliar um 
+algoritmo por seu melhor caso, médio ou pior. O que mais nos interessa neste 
+trabalho é a análise de pior caso, e para isso usa-se a notação \emph{"Big O"}.
+
+\subsection{Notação \emph{Big O}}
+Descreve o tempo ou espaço que um algoritmo consome para ser executado no 
+pior caso (ou seja, dentre todas as entradas possíveis para um programa, aquela 
+que resulta em seu pior desempenho). Nota-se por um $O$ seguido de um número real. 
+
+Por exemplo, usando tal notação, a complexidade de tempo de um algoritmo que 
+executa um laço \emph{for} de $n$ iterações para somar números, por exemplo, é 
+$O(n)$, já que no pior caso (em especial, em todos) o algoritmo executa $n$ 
+operações.
+
+\subsection{Uma definição mais formal}
+Vamos usar um exemplo para medir a complexidade de tempo de um algoritmo. 
+Entretanto, como mencionado anteriormente, a ideia é a mesma para medir sua 
+complexidade de espaço.
+
+Seja $Q(n)$ uma função que expressa a quantidade de operações que um algoritmo 
+realiza. Podemos dizer que $Q(n)$ é $O(f(n))$ se existe uma constante $c > 0$ 
+tal que $Q(n) \leq c f(n)$ para todo $c$ suficientemente grande.
+
+\hspace{1cm}
+
+Considere o seguinte algoritmo:
+
+\begin{algorithm}
+\caption{Algoritmo simples com dois laços for encadeados}\label{euclid}
+\begin{algorithmic}[1]
+
+\State $soma$ = 0
+\For{$i$ = 1 to 5}
+    \For{$j$ = 1 to $n$}
+        \State $soma$ += $j$
+        \If{$soma$ > $somaMaxima$}
+        \State \Return
+        \EndIf
+    \EndFor
+\EndFor
+\end{algorithmic}
+\end{algorithm}
+
+O número total de operações executadas por este algoritmo depende do valor 
+da variável $somaMaxima$. Quando $somaMaxima$ = 0, apenas uma operação será 
+realizada. Entretanto, como dito anteriormente vamos analisar um algoritmo 
+sempre no seu pior caso, que neste exemplo ocorre quando o valor de $somaMaxima$
+é grande o suficiente para que $soma$ nunca o atinja.
+
+Portanto, podemos dizer que este algoritmo executa $10n$ operações. Assim, o 
+algoritmo é $O(n)$, pois já que $f(n) = n$ e ao escolher uma constante $c = 10$ 
+temos que $10n \leq 10n$.
