@@ -4,7 +4,7 @@
 
 \section{Introdução}
 
-Na seção anterior desenvolvemos um algoritmo simples que percorre, no pior caso, todos os vértices de uma árvore. Neste capítulo apresentaremos uma otimização ao algoritmo anterior para que sua complexidade de tempo seja $O(sqrt(n))$, onde \textit{sqrt} remete-se ao termo inglês \textit{square root} - ou seja, raiz quadrada de $n$.
+Na seção anterior desenvolvemos um algoritmo simples que percorre, no pior caso, todos os vértices de uma árvore. Neste capítulo apresentaremos uma otimização ao algoritmo anterior para que sua complexidade de tempo seja $O(\sqrt{n})$.
 
 \section{Otimização}
 
@@ -23,11 +23,47 @@ Assumindo que as profundidades dos vértices já foram calculadas, vamos criar a
     \item etc.
 \end{itemize}
 
-Além disso, precisamos guardar, para cada vértice de um balde, quem é o seu ancestral mais profundo do balde anterior. Para melhor ilustrar isso, apresentamos a figura x:
+O valor de $p$ é essencial para que a otimização do algoritmo seja feita. Entraremos em mais detalhes em como obtê-lo na seção ~\ref{complexidade-balde}, onde analisaremos a complexidade do código que desenvolveremos.
 
-<figura>
+Em nosso algoritmo precisamos guardar, para cada vértice de um balde, quem é o seu ancestral mais profundo do balde anterior. Para melhor ilustrar isso, apresentamos a figura~\ref{fig:arvore-baldes}:
 
-Então, para encontrar o \LCA\ entre dois vértices $a$ e $b$ basta verificar em qual balde ele está (isto é, percorrer os caminhos de $a$ e $b$ para a raiz até que os ancestrais do balde anterior sejam iguais), e daí trivialmente encontrá-lo.
+\vspace{5cm}
+
+\begin{figure}[htb]
+\begin{center}
+\includegraphics[width=11cm]{images/tree_buckets.png}
+\end{center}
+\caption{\label{fig:arvore-baldes}Divisão dos vértices em baldes (1, 2 e 3).}
+\end{figure}
+
+Neste exemplo temos 5 níveis de profundidades e escolhemos o valor de $p = 2$. Entretanto, como 5 não é divisível por 2, temos que os dois primeiros baldes possuam de fato $p = 2$ níveis de profundidade enquanto o terceiro tem o restante (ou seja, 1).
+
+A partir desta árvore podemos construir tais ancestrais mais profundos do balde anterior do seguinte modo:
+
+\begin{table}[htb]
+\centering
+\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+Vértice   & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 \\ \hline
+Ancestral & 1 & 1 & 1 & 1 & 2 & 3 & 2 & 2 & 3 & 7  & 7  & 8  & 8 \\ \hline
+\end{tabular}
+\caption{Ancestrais mais profundos do balde anterior para cada vértice}
+\end{table}
+
+Note que o ancestral da raiz é naturalmente ela mesma.
+
+Então, para encontrar o \LCA\ entre dois vértices $a$ e $b$ basta verificar em qual balde o \LCA\ está (isto é, percorrer os caminhos de $a$ e $b$ para a raiz até que os ancestrais do balde anterior sejam iguais), e daí trivialmente encontrá-lo.
+
+Por exemplo, se quisermos encontrar o \LCA\ entre os vértices \textbf{10} e \textbf{13}, faríamos o seguinte:
+
+\begin{itemize}
+    \item Ancestral de 10 é o vértice \textbf{7}. Ancestral de 13 é o vértice \textbf{8}. Como são vértices distintos, atualizamos nossos vértices para seus ancestrais.
+    \item Ancestral de 7 é o vértice \textbf{2}. Ancestral de 8 é o vértice \textbf{2}. Como seus ancestrais do balde anterior são o mesmo vértice, sabemos que o \LCA\ está no balde atual (ou então é o próprio vértice 2, que já é comum aos dois).
+\end{itemize}
+Agora, basta percorrer os caminhos de \textbf{7} e \textbf{8} até a raiz naturalmente, dando pulos de tamanho 1 (isto é, indo aos seus pais diretos).
+\begin{itemize}
+    \item Pai de 7 é o vértice \textbf{5}. Pai de 8 é o vértice \textbf{5}. Como seus pais são iguais, podemos afirmar que este é o \LCA\ do nosso problema.
+\end{itemize}
 
 \section{Código}
 
@@ -35,7 +71,7 @@ Utilizaremos os algoritmos 2 e 3 demonstrados anteriormente. Veremos que precisa
 
 \hspace{1cm}
 
-Para a função de cálculo de profundidade, também guardaremos quem é o seu ancestral mais profundo do balde anterior. Além disso, toda vez que nível for múltiplo da altura do balde permitido "criaremos" um novo balde.
+Como dito anteriormente, também guardaremos para cada vértice quem é o seu ancestral mais profundo do balde anterior. Além disso, toda vez que o nível atual for múltiplo da altura do balde permitido ($p$ citado anteriormente)  "criaremos"\ um novo balde.
 
 \begin{algorithm}[H]
 \caption{Modificação do algoritmo 2}
@@ -74,23 +110,24 @@ Para a função que determina o \LCA, primeiro faremos com que $a$ e $b$ estejam
 
 \subsection{Corretude}
 
-A ideia deste algoritmo é similar à apresentada no algoritmo 3: após a execução do laço da linha 2 teremos dois vértices no mesmo balde cujo ancestrais do balde anterior são os mesmos. Afinal, sabemos que percorrer o caminho de um vértice pulando de balde em balde resultará no mesmo destino do algoritmo 3, que caminha vértice após vértice: a raiz. Isso se deve ao fato de que no algoritmo 4 apresentado nessa seção, o objeto $baldeAnterior$ apenas serve como um encurtador de caminhos - mais precisamente deixando cada pulo em um caminho de  tamanho $alturaBalde$ (isto é, a partir de um vértice de profundidade $p$ chegamos em outro de profundidade $p - alturaBalde$).
+A ideia deste algoritmo é similar a apresentada no algoritmo 3: após a execução do laço da linha 2 teremos dois vértices no mesmo balde cujos ancestrais do balde anterior são os mesmos. Afinal, sabemos que percorrer o caminho de um vértice pulando de balde em balde resultará no mesmo destino do algoritmo 3, que caminha vértice após vértice: a raiz. Isso se deve ao fato de que no algoritmo 4 apresentado nessa seção, o objeto $baldeAnterior$ apenas serve como um encurtador de caminhos - mais precisamente deixando cada pulo em um caminho de  tamanho $alturaBalde$ (isto é, a partir de um vértice de profundidade $p$ chegamos em outro de profundidade $p - alturaBalde$).
 
-A linha 5 do código atualiza o valor de $a$ para o próximo vértice do seu caminho até a raiz. Sabemos que $a$ sempre é mais profundo do que $b$ já que as linhas 3 e 4 trocam os vértices $a$ e $b$ caso o segundo seja mais profundo do que o primeiro.
+A linha 5 do código atualiza o valor de $a$ para o próximo vértice do seu caminho encurtado até a raiz. Sabemos que $a$ sempre é mais profundo do que $b$ já que as linhas 3 e 4 trocam os vértices $a$ e $b$ caso o segundo seja mais profundo do que o primeiro.
 
-O código termina com uma chamada da função LCA\_Simples já provada no capítulo anterior, que devolve o \LCA\ entre dois vértices de uma árvore.
+O código termina com uma chamada da função LCA\_Simples já provada no capítulo anterior, que devolve o \LCA\ entre dois vértices de uma árvore enraizada.
 
 \subsection{Complexidade}
+\label{complexidade-balde}
 
-O algoritmo 4 executa uma simples busca em profundidade com operações de tempo constante (linhas 2-7), e assim sua complexidade de tempo é $O(n+m)$, onde $n$ é aquantidade de vértices e $m$ a quantidade de arestas. A complexidade de espaço é $O(n)$.
+O algoritmo 4 executa uma simples busca em profundidade com operações de tempo constante (linhas 2-7) e assim sua complexidade de tempo é $O(n+m)$, onde $n$ é aquantidade de vértices e $m$ a quantidade de arestas. A complexidade de espaço é $O(n)$.
 
 Seja $q$ a quantidade de baldes existentes. No laço das linhas 2-5 do algoritmo 5, sendo $q_a$ e $q_b$ as quantidades de baldes acima de $a$ e $b$, respectivamente, em seus caminhos até a raiz, podemos dizer que são executadas $q_a + q_b$ operações. No pior caso, $q_a = q_b = q$, e portanto essa etapa do algoritmo é $O(q)$.
 
 A chamada de LCA\_Simples tem complexidade $O(h)$, onde $h$ é a altura da árvore. Entretanto, ao dividir nossa árvore em baldes, garantimos que qualquer balde terá altura $h = alturaBalde$.
 
-Assim, denotando $p = alturaBalde$, o algoritmo 5 tem complexidade de tempo $O(p + q)$.
+Assim, denotando $p = alturaBalde$, o algoritmo 5 tem complexidade de tempo $O(p + q)$. Dado que os valores $p$ e $q$ dependem diretamente da condição de inserção de um vértice em um balde, analisemos agora como fazer isso para atingir a melhor complexidade possível.
 
-\subsection{Tamanho de um balde}
+\subsubsection{Tamanho de um balde}
 
 Para que o algoritmo descrito fique de fato mais eficiente do que o do capítulo anterior, devemos escolher bem quantos níveis de profundidade vamos permitir que estejam em um mesmo balde. Ou seja, determinar, para cada balde, o tamanho do intervalo de profundidades que descrevemos anteriormente.
 
