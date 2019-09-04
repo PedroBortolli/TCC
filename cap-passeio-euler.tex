@@ -88,45 +88,106 @@ Agora, ao fazer uma consulta nessa estrutura para os vértices $4$ e $5$, por ex
 
 Por fim, basta verificar qual desses vértices possui a menor altura - este será o \LCA. No exemplo, o vértice com tal propriedade é $2$, e de fato podemos verificar que ele é o \LCA\ entre os nós $4$ e $5$.
 
+Note que entre os vértices retornados estão alguns nós que não pertencem ao caminho de $4$ e $5$. No exemplo, o vértice $6$ aparece. Entretanto, podemos observar que a profundidade dele é maior do que ambos $4$ e $5$ (afinal, ele é filho de $4$) - o que nos diz que sua presença no intervalo não faz diferença para a obtenção do \LCA. Provaremos adiante o porque deste algoritmo sempre funcionar.
+
 \section{Otimização com árvore de segmentos}
 
-Embora agora conseguimos obter todos os vértices de qualquer caminho, ainda não conseguimos calcular de forma eficiente qual é o vértice de menor profundidade do conjunto $V$. Isto é, no pior caso temos $n$ vértices em um caminho e teríamos que percorrer todos estes nós verificando um a um qual é o de menor profundidade, levando a um algoritmo $O(n)$.
+Embora agora conseguimos obter todos os vértices de qualquer caminho, ainda não conseguimos calcular de forma eficiente qual é o vértice de menor profundidade do conjunto $V$. Isto é, no pior caso temos $n$ vértices em um caminho e teríamos que percorrer todos estes nós verificando um a um qual é o de menor profundidade, levando a um algoritmo de tempo $O(n)$.
 
-Porém, usando uma famosa estrutura de dados chamada árvore de segmentos (do inglês, segment tree (COLOCAR ITÁLICO)) conseguimos o nosso objetivo em tempo $O(log n)$.
+Porém, usando uma famosa estrutura de dados chamada árvore de segmentos (do inglês, \textit{segment tree}) conseguimos obter o vértice de menor profundidade em tempo $O(log\ n)$. Essa estrutura permite fazer consultas de operações cumulativas (adição, máximo, mínimo, etc) em um intervalo de uma lista de maneira eficiente.
 
-Falar brevemente de seg, citar o TCC do Matheus (?) que fala só de seg.
+Como o objetivo deste trabalho é focar exclusivamente em resolver o problema do ancestral em comum mais próximo, não discutiremos em detalhes como essa estrutura funciona, tampouco escreveremos seu código. Ao invés, assumiremos que temos as seguintes funções de nossa árvore de segmentos:
 
-Explicar como montar a seg usando o passeio de Euler (o algoritmo citado na seção anterior).
+\begin{itemize}
+    \item \textbf{Constrói(lista)}: monta uma árvore de segmentos a partir de uma lista de valores. Leva tempo $O(n)$ onde $n$ é o tamanho da lista.
+    \item \textbf{Atualiza(posição, valor)}: atualiza uma posição da árvore de segmentos com o valor passado. Leva tempo $O(log\ n)$.
+    \item \textbf{Consulta(esquerda, direita)}: devolve o índice da posição de menor valor no intervalo $[esquerda,\ direita]$. Leva tempo $O(log\ n)$.
+\end{itemize}
+
+Por enquanto, vamos focar na função de consulta. Ela resolve o nosso problema inicial de achar um elemento mínimo em um intervalo de maneira rápida.
+
+Na próxima seção utilizaremos todas as funções mencionadas, juntamente com a ideia descrita na seção \textbf{Passeio de Euler} para montar a nossa estrutura completa de determinar \LCA s.
+
+\section{Código}
+
+Conforme percorremos a árvore contando os tempos vamos simultaneamente construindo a árvore de segmentos. Assumiremos que a variável $contador$ foi inicializada com o valor 1.
 
 \begin{algorithm}[H]
 \caption{Passeio de Euler}
 \begin{algorithmic}[1]
-\Function{\textsc{Euler}}{vertice)}
-    \State $profundidade[vertice] \rec nivel$
-    \State $baldeAnterior[vertice] \rec ancestralAnterior$
-    \If{$nivel \ \% \ alturaBalde = 0$}
-        \State $anterior \rec vertice$
-    \Else
-        \State $anterior \rec ancestralAnterior$
-    \EndIf
+\Function{\textsc{Euler}}{vertice}
     \For{cada $filho$ em $filhos[vertice]$}
-        
-        \State $CalculaProfundidade(filho,\ nivel+1,\ anterior)$
+        \State $mapa[contador] \rec vertice$
+        \State $arvoreSeg[contador] \rec profundidade[vertice]$
+        \State $contador \rec contador + 1$
+        \State $Euler(filho)$
     \EndFor
+    \State $tempo[vertice] \rec contador$
+    \State $mapa[contador] \rec vertice$
+    \State $arvoreSeg[contador] \rec profundidade[vertice]$
+    \State $contador \rec contador + 1$
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
 
+Como mencionado antes podemos escolher qualquer um dos tempos de um vértice na hora de realizar uma consulta. Por esse motivo, podemos sempre guardar que o tempo de um vértice é o valor mais recente de $contador$ (evitando desperdiçar memória guardando informações inúteis).
 
-\section{Complexidade}
+Além da árvore de segmentos e do tempo de cada vértice, também guardamos um $mapa$ para conseguir fazer o processo contrário: dado um tempo saberemos qual é o vértice correspondente à ele.
 
-TODO
+O último passo é simplesmente chamar a função \textbf{Constrói(arvoreSeg)} para montar a árvore de segmentos a partir dos valores preenchidos em $arvoreSeg$. Assim, para cada consulta temos o algoritmo abaixo:
+
+\begin{algorithm}[H]
+\caption{LCA utilizando a estrutura de Euler}
+\begin{algorithmic}[1]
+\Function{\textsc{LCA}}{a, b}
+    \State $esquerda \rec tempo[a]$
+    \State $direita \rec tempo[b]$
+    \If{$esquerda > direita$}
+        \State $troca(esquerda, direita)$
+    \EndIf
+    \State $indice \rec Consulta(tempo[a],\ tempo[b])$
+    \\\hspace{5mm} \Return $mapa[indice]$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
 
 \section{Corretude}
 
-TODO
+Vamos mostrar que, após percorrermos a árvore de Euler anotando os tempos de cada vértice da meneira mencionada, podemos escolher \textbf{qualquer} tempo de um vértice para ser usado na hora de achar o \LCA. Em outras palavras, vamos provar que para qualquer par de tempos escolhido de $a$ e $b$, o vértice de menor profundidade do intervalo contínuo $[tempo[a],\ tempo[b]]$ da árvore de Euler será o \LCA(a, b).
 
-\section{Exercício}
+\vspace{0.5cm}
+
+Vamos assumir que o \LCA\ de dois nós $a$ e $b$ é o vértice $c$. Então, quando chamamos a DFS do Passeio de Euler partindo da raiz sabemos que vamos encontrar o vértice $c$ antes de $a$ e $b$ (afinal, ele é o \LCA\ e tem profundidade menor do que seus descendentes). Estando em $c$, vamos assumir sem perda de generalidade que a subárvore do vértice $a$ é chamada antes do que a de $b$. Assim, eventualmente $a$ ganhará um ou mais tempos. O importante é que quando a subárvore inteira de $a$ for visitada, a DFS voltará para o vértice $c$, dando a ele um novo tempo.
+
+Logo, podemos notar que para todo tempo do vértice $a$ existe um tempo de $c$ que é maior.
+
+Seguindo o algoritmo, quando a DFS for chamada para a subárvore de $b$, podemos notar que todos os tempos que serão eventualmente associados ao vértice $b$ serão maiores do que algum tempo de $c$.
+
+Por fim, também é verdade que todo tempo de $b$ será estritamente maior do que todo tempo de $a$, já que a DFS só será executada para a subárvore de $b$ quando terminar integralmente de percorrer a subárvore de $a$. Então, se colocarmos os tempos de $a, b$ e $c$ numa linha temporal, temos:
+
+\begin{center}
+    $<$ tempos do vértice $a$, \ tempo do vértice $c$, \ tempos do vértice  $b>$
+\end{center}
+
+E por este motivo podemos escolher qualquer tempo de $a$ e qualquer tempo de $b$, pois o tempo do vértice $c$ sempre estará contido no intervalo formado pela escolha.
+
+\vspace{0.5cm}
+
+Outra observação deste algoritmo é que no intervalo $[tempo[a],\ tempo[b]]$ podem existir valores associados à vértices que não necessariamente estão no caminho de $a$ até $b$. Porém, isso não é um problema devido ao fato de que todos eles serão descendentes do vértice $c$ (o \LCA\ do problema) e por isso terão profundidade estritamente maior. Como o intuito desta estrutura é nos possibilitar inferir quem é o \LCA\ verificando o vértice de menor profundidade, estes nós adicionais no intervalo não fazem diferença alguma.
+
+\section{Complexidade}
+
+A complexidade deste algoritmo é fácil de ser obtida. Vamos analisar as três partes do código:
+
+\begin{itemize}
+    \item Algoritmo 8: uma DFS com operações de tempo constante. Portanto, sua complexidade de tempo é $O(n+m)$
+    \item Construção da árvore de segmentos: como discutido anteriormente, esta "função caixa-preta"\  possui complexidade de tempo $O(n)$, onde $n$ é o tamanho da árvore a ser montada
+    \item Algoritmo 9: esta outra "função caixa-preta"\ possui complexidade de tempo $O(log\ n)$, onde $n$ é a quantidade de nós da árvore de segmentos. Podemos assumir que o retorno da função é executado em tempo constante já que poderíamos utilizar uma lista para armazenar o mapeamento de tempos para vértices.
+\end{itemize}
+
+Resumindo, a complexidade de tempo da construção de nossa estrutura de dados é $O(n)$, enquanto uma consulta de \LCA\ é $O(log\ n)$.
+
+\section{Demonstração com um problema}
 
 Vamos resolver um problema do site Codeforces (?) usando a ideia descrita nesta seção.
 
@@ -141,6 +202,6 @@ Explicar ideia.
 Colocar código.
 
 
-\subsection{Extra}
+\subsection{Exercícios extras}
 
-Colocar alguns links de problemas que também dá pra resolver usando essa ideia.
+Colocar alguns links de problemas que também dão pra resolver usando essa ideia.
