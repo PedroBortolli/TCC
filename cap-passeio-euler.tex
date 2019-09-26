@@ -4,18 +4,18 @@
 
 \section{Introdução}
 
-Agora que vimos um algoritmo eficiente que resolve o problema do \LCA\, vamos explorar uma outra técnica que tem mesmo tempo de complexidade. Entretanto, neste capítulo estudaremos um algoritmo capaz de resolver problemas um pouco mais complexos em que, por exemplo, é necessário atualizar o valor de um nó da árvore rapidamente (diferente dos outros algoritmos em que a árvore deveria ser sempre estática - isto é - sem modificações). No final deste capítulo será melhor explicado como isso pode ser útil e mostraremos uma aplicação prática.
+Agora que vimos um algoritmo eficiente que resolve o problema do \LCA\, vamos explorar uma outra técnica que tem mesmo tempo de complexidade. Neste capítulo estudaremos um algoritmo capaz de resolver problemas um pouco mais complexos em que, por exemplo, é necessário atualizar o valor de um nó da árvore rapidamente (diferente dos outros algoritmos em que a árvore deveria ser sempre estática - isto é - sem modificações). No final deste capítulo será melhor explicado como isso pode ser útil e mostraremos uma aplicação prática.
 
 
 \section{Descrição}
 
-Vamos imaginar que, ao calcular o \LCA\ entre dois vértices distintos $a$ e $b$ temos uma função $F(x, y)$ que devolve todos os vértices no caminho de $a$ para $b$. Para melhor ilustrar isso, considere a seguinte árvore enraizada:
+Vamos imaginar que temos uma função $F(x, y)$ que devolve todos os vértices no caminho de $a$ para $b$. Para melhor ilustrar isso, considere a seguinte árvore enraizada:
 
 \vspace{0.5cm}
 
 \begin{figure}[htb]
 \begin{center}
-\includegraphics[width=6cm]{images/graph_euler.png}
+\includegraphics[width=7cm]{images/graph_euler.png}
 \end{center}
 \caption{\label{fig:arvore-euler}Árvore enraizada de 6 vértices}
 \end{figure}
@@ -49,38 +49,58 @@ Assim, basta verificar qual é o vértice de menor profundidade dentre os nós d
 
 Previamente assumimos que existe uma função F que retorna todos os vértices do caminho entre dois nós $a$ e $b$. Entretanto, ainda não estudamos como escrever esta função.
 
-Toda vez que queremos fazer uma consulta entre dois vértices $a$ e $b$, poderíamos percorrer o caminho entre estes dois vértices de maneira bruta - o que geraria um gasto de tempo $O(n)$ para obter todos os vértices neste caminho.
+Toda vez que queremos fazer uma consulta entre dois vértices $a$ e $b$, poderíamos percorrer o caminho entre estes dois vértices visitando todos os nós entre eles um a um. Ou seja, um algoritmo linear - ineficiente para nosso problema.
 
-Porém, podemos montar uma estrutura de dados que nos possibilita obter de maneira rápida todos os vértices no caminho entre quaisquer vértices $a$ e $b$.
+Porém, podemos montar uma estrutura de dados que nos possibilita obter de maneira rápida todos os vértices no caminho entre quaisquer vértices $a$ e $b$ de uma árvore.
 
 
 \subsection{Passeio de Euler}
 
 O que faremos é "planificar"\ uma árvore, de forma que tenhamos uma sequência de vértices em uma determinada ordem.
 
-A ideia é visitar os vértices a partir da raiz contando o tempo em que passamos por um nó. A raiz, por exemplo, é visitada no tempo 1. Seu primeiro filho, no tempo 2. O primeiro filho de seu filho no tempo 3, e assim por diante. Assim, para cada vértice guardaremos:
+A ideia é rodar uma DFS a partir da raiz contando um tempo crescente conforme a recursão é chamada. Considere o percurso de uma árvore usando uma DFS. Quando um nó é visitado podemos anotar o tempo que isso ocorre, de acordo com os seguintes critérios:
 
 \begin{itemize}
-    \item Cada tempo em que aprofundamos a busca para um de seus filhos
-    \item O tempo em que terminamos de aprofundar a busca em todos os seus filhos
+    \item Anotamos o tempo em que iniciamos a busca em cada filho de um dado vértice $x$
+    \item Anotamos o tempo em que terminamos a busca de cada filho de um vértice $x$
 \end{itemize}
 
-Entender a ideia deste algoritmo é muito mais fácil com um exemplo. Para isso, usaremos novamente a árvore introduzida no início deste capítulo, já com os tempos que cada vértice guardou após a execução do Passeio de Euler:
+Entender a ideia deste algoritmo é muito mais fácil introduzindo o código e um exemplo. Vamos então apresentar a DFS que executa o algoritmo mencionado. Para cada tempo decorrido guardamos qual foi o vértice visitado naquele momento. Note que é necessário que exista uma variável global $contador$ inicializada com 1.
 
 \vspace{10cm}
 
+\begin{algorithm}[H]
+\caption{Contando os tempos}
+\begin{algorithmic}[1]
+\Function{\textsc{Euler}}{vertice}
+    \For{cada $filho$ em $filhos[vertice]$}
+        \State $mapa[contador] \rec vertice$
+        \State $contador \rec contador + 1$
+        \State $Euler(filho)$
+    \EndFor
+    \State $mapa[contador] \rec vertice$
+    \State $contador \rec contador + 1$
+\EndFunction
+\end{algorithmic}
+\end{algorithm}
+
+
+Para exemplificar usaremos novamente a árvore introduzida no início deste capítulo, já com os tempos que cada vértice guardou após a execução do código acima:
+
+\vspace{0.5cm}
+
 \begin{figure}[htb]
 \begin{center}
-\includegraphics[width=6cm]{images/graph_euler_numbered.png}
+\includegraphics[width=8cm]{images/graph_euler_numbered.png}
 \end{center}
-\caption{\label{fig:arvore-euler2}Passeio de Euler na árvore}
+\caption{\label{fig:arvore-euler2}Passeio de Euler na árvore da figura 6.1}
 \end{figure}
 
-O código que gera os tempos de cada vértice é basicamente uma simples DFS:
+Para fazer uma consulta basta pegar \textbf{qualquer} tempo do primeiro vértice e \textbf{qualquer} tempo do segundo vértice e retornar todos os vértices cujo tempo esteja contido neste intervalo de tempos.
 
-Agora, ao fazer uma consulta nessa estrutura para os vértices $4$ e $5$, por exemplo, basta pegar \textbf{qualquer} tempo do primeiro vértice e \textbf{qualquer} tempo do segundo vértice e retornar todos os vértices cujo tempo esteja contido neste intervalo de tempos. Assim, essa consulta teria os tempos 3 (do vértice 4) e tempo 7 (do vértice 5). Logo, os vértices retornados são:
+Vamos simular o resultado da consulta nessa estrutura para os vértices $4$ e $5$. Vamos escolher o tempo 3 (do vértice 4) e o tempo 7 (do vértice 5). Logo, os vértices retornados são:
 
-\vspace{0.3cm}
+
 
 \begin{center}
     4, 6, 4, 2, 5    
@@ -88,7 +108,7 @@ Agora, ao fazer uma consulta nessa estrutura para os vértices $4$ e $5$, por ex
 
 Por fim, basta verificar qual desses vértices possui a menor altura - este será o \LCA. No exemplo, o vértice com tal propriedade é $2$, e de fato podemos verificar que ele é o \LCA\ entre os nós $4$ e $5$.
 
-Note que entre os vértices retornados estão alguns nós que não pertencem ao caminho de $4$ e $5$. No exemplo, o vértice $6$ aparece. Entretanto, podemos observar que a profundidade dele é maior do que ambos $4$ e $5$ (afinal, ele é filho de $4$) - o que nos diz que sua presença no intervalo não faz diferença para a obtenção do \LCA. Provaremos adiante o porque deste algoritmo sempre funcionar.
+Note que podem ser retornados vértices que não pertencem ao caminho de entre os dois nós consultados. No exemplo, o vértice $6$ não está no caminho entre $4$ e $5$ mas está contido no intervalo. Entretanto, podemos observar que a profundidade dele é maior do que ambos $4$ e $5$ (afinal, ele é filho de $4$) - o que nos diz que sua presença no intervalo não faz diferença para a obtenção do \LCA. Provaremos o porque deste algoritmo sempre funcionar na seção 6.6 deste capítulo.
 
 \section{Otimização com árvore de segmentos}
 
@@ -110,7 +130,7 @@ Na próxima seção utilizaremos todas as funções mencionadas, juntamente com 
 
 \section{Código}
 
-Conforme percorremos a árvore contando os tempos vamos simultaneamente construindo a árvore de segmentos. Assumiremos que a variável $contador$ foi inicializada com o valor 1.
+Faremos uma modificação do algoritmo 8 apresentado neste capítulo. Conforme percorremos a árvore contando os tempos vamos simultaneamente construindo a árvore de segmentos. Assumiremos novamente que a variável global $contador$ foi inicializada com o valor 1.
 
 \begin{algorithm}[H]
 \caption{Passeio de Euler}
@@ -130,9 +150,32 @@ Conforme percorremos a árvore contando os tempos vamos simultaneamente construi
 \end{algorithmic}
 \end{algorithm}
 
-Como mencionado antes podemos escolher qualquer um dos tempos de um vértice na hora de realizar uma consulta. Por esse motivo, podemos sempre guardar que o tempo de um vértice é o valor mais recente de $contador$ (evitando desperdiçar memória guardando informações inúteis).
+\vspace{10cm}
 
-Além da árvore de segmentos e do tempo de cada vértice, também guardamos um $mapa$ para conseguir fazer o processo contrário: dado um tempo saberemos qual é o vértice correspondente à ele.
+Abaixo estão os resultados de $mapa$, $arvoreSeg$ e $tempo$ após a execução deste algoritmo para a árvore apresentada na descrição deste capítulo:
+
+\begin{table}[htb]
+\centering
+\begin{tabular}{|l|c|c|c|c|c|c|c|c|c|c|c|}
+\hline
+Índice      &  1 & 2 &  3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 \\ \hline
+mapa        &  1 & 2 &  4 & 6 & 4 & 2 & 5 & 2 & 1 &  3 &  1 \\ \hline
+arvoreSeg   &  1 & 2 &  3 & 4 & 3 & 2 & 3 & 2 & 1 &  2 &  1 \\ \hline
+tempo       & 11 & 8 & 10 & 5 & 7 & 6 & - & - & - &  - &  - \\ \hline
+
+\end{tabular}
+\caption{Resultado da execução do algoritmo 9 para o exemplo}
+\end{table}
+
+Algumas observações sobre o que fizemos:
+
+\begin{itemize}
+    \item $mapa[x]$ guarda qual é o vértice visitado no instante de tempo $x$
+    \item $arvoreSeg[x]$ guarda qual é a profundidade do vértice obtido ao consultar $mapa[x]$
+    \item $tempo[v]$ guarda o último tempo registrado do vértice $v$ (para que depois possamos usá-lo na consulta, já que qualquer tempo nos basta) - ou seja - sempre o valor mais recente de $contador$
+\end{itemize}
+
+\vspace{0.5cm}
 
 O último passo é simplesmente chamar a função \textbf{Constrói(arvoreSeg)} para montar a árvore de segmentos a partir dos valores preenchidos em $arvoreSeg$. Assim, para cada consulta temos o algoritmo abaixo:
 
@@ -166,14 +209,14 @@ Seguindo o algoritmo, quando a DFS for chamada para a subárvore de $b$, podemos
 Por fim, também é verdade que todo tempo de $b$ será estritamente maior do que todo tempo de $a$, já que a DFS só será executada para a subárvore de $b$ quando terminar integralmente de percorrer a subárvore de $a$. Então, se colocarmos os tempos de $a, b$ e $c$ numa linha temporal, temos:
 
 \begin{center}
-    $<$ tempos do vértice $a$, \ tempo do vértice $c$, \ tempos do vértice  $b>$
+    $[$todos os tempos do vértice $a$, \ algum tempo do vértice $c$, \ todos os tempos do vértice $b]$
 \end{center}
 
-E por este motivo podemos escolher qualquer tempo de $a$ e qualquer tempo de $b$, pois o tempo do vértice $c$ sempre estará contido no intervalo formado pela escolha.
+E por este motivo podemos escolher qualquer tempo de $a$ e qualquer tempo de $b$, pois sempre existirá um tempo do vértice $c$ contido no intervalo formado pela escolha.
 
 \vspace{0.5cm}
 
-Outra observação deste algoritmo é que no intervalo $[tempo[a],\ tempo[b]]$ podem existir valores associados à vértices que não necessariamente estão no caminho de $a$ até $b$. Porém, isso não é um problema devido ao fato de que todos eles serão descendentes do vértice $c$ (o \LCA\ do problema) e por isso terão profundidade estritamente maior. Como o intuito desta estrutura é nos possibilitar inferir quem é o \LCA\ verificando o vértice de menor profundidade, estes nós adicionais no intervalo não fazem diferença alguma.
+Outra observação deste algoritmo é que no intervalo $[tempo[a],\ tempo[b]]$ podem existir valores associados a vértices que não necessariamente estão no caminho de $a$ até $b$. Porém, isso não é um problema devido ao fato de que todos eles serão descendentes do vértice $c$ (o \LCA\ do problema) e por isso terão profundidade estritamente maior. Como o intuito desta estrutura é nos possibilitar inferir quem é o \LCA\ verificando o vértice de menor profundidade, estes nós adicionais no intervalo não fazem diferença alguma.
 
 \section{Complexidade}
 

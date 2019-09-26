@@ -94,16 +94,29 @@ Voltando à figura \ref{fig:arvore-6}, vamos simular os passos completos para en
 
 Vamos dividir nosso algoritmo em duas partes: pré-processamento da matriz de programação dinâmica e a função de obtenção do \LCA\ entre dois vértices $a$ e $b$.
 
+Primeiro, para o pré-processamento, vamos apresentar a seguinte recorrência:
+
+\begin{center}
+  pd[i][j]=\begin{cases}
+    pai[i], & \text{se $j = 0$}.\\
+    pd[pd[i][j-1]][j-1], & \text{caso contrário}.
+  \end{cases}
+\end{center}
+
+Como explicado na seção 5.2, vamos calcular os ancestrais de "potência de dois"\ de cada vértice da árvore. Assim, $pd[i][j]$ representa o ancestral $2^j$ do vértice $i$.
+
+\vspace{0.2cm}
+
 \begin{algorithm}[H]
 \caption{Cálculo da matriz de programação dinâmica ($pd$)}
 \begin{algorithmic}[1]
-\Function{\textsc{CalculaPD}}{}
+\Function{\textsc{CalculaAncestrais}}{}
     \For{cada $nivel$ em $logNiveis$}
         \For{cada $vertice$ em $vertices$}
             \If{$nivel = 0$}
                 \State $pd[vertice][nivel] \rec pai[vertice]$
             \Else
-                \State $pd[vertice][nivel] \rec pd[pd[vertice[nivel-1]][nivel-1]$
+                \State $pd[vertice][nivel] \rec pd[pd[vertice][nivel-1]][nivel-1]$
             \EndIf
         \EndFor
     \EndFor
@@ -111,11 +124,14 @@ Vamos dividir nosso algoritmo em duas partes: pré-processamento da matriz de pr
 \end{algorithmic}
 \end{algorithm}
 
+Feito isso, agora podemos escrever o código que responderá as consultas de \LCA\ entre dois vértices $a$ e $b$:
+
+\vspace{0.2cm}
 
 \begin{algorithm}[H]
 \caption{Obtenção do \LCA}
 \begin{algorithmic}[1]
-\Function{\textsc{CalculaPD}}{a,\ b}
+\Function{\textsc{LCA\_PD}}{a,\ b}
     \If{$profundidade[b] < profundidade[a]$}
         \State $troca(a, b)$
     \EndIf
@@ -140,10 +156,35 @@ Vamos dividir nosso algoritmo em duas partes: pré-processamento da matriz de pr
 \end{algorithmic}
 \end{algorithm}
 
+\vspace{10cm}
+
 \section{Corretude}
 
-TODO
+\subsection{Pré-processamento}
+
+Neste algoritmo é feito o pré-processamento da recorrência apresentada na seção 5.3.
+
+Na primeira iteração do laço mais externo são calculados os $ancestrais\ 2^0$ de cada vértice (o caso base da recorrência). Note que tal ancestral é seu pai imediato, então podemos facilmente determinar $pd[x][0]$ para todo vértice $x$. Isto é feito na linha 5 do código.
+
+Em seguida, da segunda iteração em diante do laço mais externo são obtidos os ancestrais "não diretos"\ (isto é, um ancestral que não é o pai imediato de um nó). Podemos notar que $ancestral\ 2^i$ de um vértice $v$ é o $ancestral\ 2^{i-1}$ do $ancestral\ 2^{i-1}$ de $v$. Afinal, $2^{i-1} + 2^{i-1} = 2^i$, e por este motivo podemos fazer com que no caminho de um vértice até o seu ancestral em questão visitemos este vértice intermediário. Então, concluimos que a linha 7 produz o resultado correto de $pd[vertice][nivel]$, já que todos os ancestrais $nivel - 1$ já foram computados e só dependemos deles nesta etapa.
+
+
+\subsection{LCA}
+
+Agora vamos analisar a corretude do algoritmo de obtenção do \LCA\ baseado nos valores pré-computados durante a execução do algoritmo 6.
+
+Nas linhas 2 e 3 os vértices $a$ e $b$ são trocados caso o vértice $a$ seja mais profundo. O motivo disso é que queremos assumir que a profundidade do vértice $b$ sempre seja maior ou igual do que a profundidade do vértice $a$.
+
+No laço da linha 5 percorremos o caminho do vértice $b$ até a raiz, subindo este vértice até o nó de seu caminho cuja profundidade seja a mesma do vértice $a$. Sendo $logNiveis$ o valor do $log$ da altura da árvore, percorremos este laço de maneira decrescente começando em $logNiveis$. Nas linhas 6 e 7 atualizamos o valor atual do vértice $b$ caso ao subir $2^i$ níveis a profundidade do novo nó obtido não é menor do que a do vértice $a$ - afinal, queremos garantir que no final do laço ambos estejam no mesmo nível. Como qualquer número inteiro pode ser representado como uma soma de potências de dois, garantimos que ao final da iteração teremos conseguido com que $profundidade[b] = profundidade[a]$.
+
+Nas linhas 9 e 10 é verificado se $a = b$. Como $a$ e $b$ agora estão na mesma altura da árvore, eles podem coincidir de serem o mesmo vértice (ou seja, $b$ estava na subárvore de $a$) - concluindo que obtivemos o \LCA\ e podemos parar o algoritmo.
+
+Caso a execução do código alcance a linha 11, sabemos então que $a$ e $b$ ainda não se encontraram (e portanto ainda não sabemos quem é o \LCA). No laço da linha 11 iteramos de $logNiveis$ até 0 para verificar todos os $ancestrais\ 2^i$ de $a$ e $b$ em ordem decrescente. Na linha 12 é verificado se $ancestral_a\ 2^i$ difere de $ancestral_b\ 2^i$. Caso isso se confirme, sabemos que se for dado um pulo de tamanho $2^i$ ainda não teremos encontrado o \LCA, já que se se tais ancestrais fossem iguais poderíamos ter encontrado o \LCA\ ou qualquer vértice acima do \LCA\ no caminho da raiz. Então, atualizamos ambos $a$ e $b$ para seus respectivos ancestrais e repetimos isso até o laço acabar. No final deste laço saberemos que $a$ e $b$ estarão nos vértices menos profundos dos seus caminhos até a raiz que ainda não são o \LCA\ entre eles (pelo mesmo argumento de que conseguimos chegar em qualquer altura dando pulos de tamanho potência de dois). Assim, basta retornar o pai de qualquer um deles que este será o \LCA\ de fato.
+
+\vspace{10cm}
 
 \section{Complexidade}
 
-TODO
+No pré-processamento são executados dois laços encadeados: o mais externo executa $log\ h$ iterações, onde $h$ é a altura da árvore. O laço interno executa $n$ iterações, onde $n$ é a quantidade de vértices da árvore. Assim, como no pior caso $h = n$, concluimos que a função $CalculaAncestrais$ tem complexidade de tempo e de memória ambos $O(n\ log\ n)$.
+
+No cálculo do \LCA\ fazemos operações de tempo constante nas linhas 2, 3 e 4. Os laços das linhas 5 e 11 ambos executam $log\ h$ iterações cada, com $h$ sendo a altura da árvore, e em cada iteração são feitas operações de tempo constante. Novamente, como no pior caso $h$ é igual ao número $n$ de vértices na árvore, concluimos que a função $LCA\_PD$ possui complexidade de tempo $O(log\ n)$.
