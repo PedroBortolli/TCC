@@ -1,3 +1,6 @@
+// Este codigo foi testado no problema ANTS10 - Colonia de Formigas do SPOJ Brasil
+// URL do problema: https://br.spoj.com/problems/ANTS10/
+
 #include <bits/stdc++.h>
 using namespace std;
 

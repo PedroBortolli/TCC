@@ -1,3 +1,6 @@
+// Este codigo foi testado no problema LCA - Lowest Common Ancestor do SPOJ
+// URL do problema: https://www.spoj.com/problems/LCA/
+
 #include <bits/stdc++.h>
 using namespace std;
 
