@@ -1,9 +1,11 @@
+// Este codigo foi testado no problema LCA - Lowest Common Ancestor do SPOJ
+// URL do problema: https://www.spoj.com/problems/LCA/
+
 #include <bits/stdc++.h>
 using namespace std;
 
 int profundidade[1005], baldeAnterior[1005], pai[1005], raizQuadrada, pd[1005][15], alturaMaxima = 1;
 vector <int> filhos[1005];
-int pot[15] = {1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096};
 
 void CalculaProfundidade(int vertice, int nivel) {
 	profundidade[vertice] = nivel;
@@ -24,20 +26,11 @@ void CalculaPD(int qntdVertices) {
 }
 
 int LCA(int a, int b) {
-	/*
-	for (int i = 0; i <= alturaMaxima; i++)
-		printf("Ancestral %d de %d = %d\n", i, a, pd[a][i]);
-	printf("\n\n");
-	for (int i = 0; i <= alturaMaxima; i++)
-		printf("Ancestral %d de %d = %d\n", i, b, pd[b][i]);
-	*/
 	if (profundidade[b] < profundidade[a]) swap(a, b);
-	int novoB = b, intervalo;
 	for (int i = alturaMaxima; i >= 0; i--) {
-		if (profundidade[novoB] - pot[i] >= profundidade[a])
-			novoB = pd[b][i];
+		if (profundidade[b] - (1 << i) >= profundidade[a])
+			b = pd[b][i];
 	}
-	b = novoB;
 	if (a == b) return a;
 	for (int i = alturaMaxima; i >= 0; i--) {
 		if (pd[a][i] != pd[b][i])
