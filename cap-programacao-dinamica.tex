@@ -139,16 +139,14 @@ Feito isso, agora podemos escrever o código que responderá as consultas de \LC
     \If{$prof[b] < prof[a]$}
         \State $troca(a, b)$
     \EndIf
-    \State $bAtual \rec b$
     \State $i \rec logNiveis$
     \While { $i \geq 0$}
         \If{$prof[bAtual] - 2^i \geq prof[a]$}
-            \State $bAtual \rec pd[b][i]$
+            \State $b \rec pd[b][i]$
         \EndIf
         \vspace{-0.2cm}
         \State $i \rec i - 1$
     \EndWhile
-    \State $b \rec bAtual$
     \If{$a = b$}
         \\\hspace{11mm} \Return $a$
     \EndIf
