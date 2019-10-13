@@ -105,25 +105,4 @@ Para analisar a complexidade de tempo do nosso algoritmo, vamos verificar quanta
     \item \textbf{Segundo laço}: em um pior caso onde ambos $a$ e $b$ são folhas de uma árvore de $n$ vértices, temos que este laço executará $n$ operações para que os caminhos até a raiz sejam percorridos.
 \end{itemize}
 
-Assim, a complexidade de tempo do algoritmo 3 é $O(n)$, onde $n$ é o número de vértices na árvore. Como não utilizamos memória adicional nesta etapa, a complexidade de memória é constante - ou seja - $O(1)$. https://www.spoj.com/problems/LCA/
-
-
-
-% OLD VERSION:
-
-\iffalse
-Nosso algoritmo é executado enquanto $a$ é diferente de $b$. Caso a função seja chamada com dois vértices iguais ($a = b$) retornamos $a$ como o \LCA\ entre eles. Caso contrário, analisemos o que o código faz. Note que o algoritmo assume que $a$ e $b$ estejam na mesma árvore.
-
-Chamaremos o vértice mais profundo da entrada de $a$ e o menos profundo (ou de profundidade igual) de $b$. Percorre-se o caminho partindo de $a$ até a raiz (aqui, percorrer o caminho significa continuamente atribuir o pai de um vértice a ele mesmo), parando quando encontrarmos um vértice de profundidade igual à profundidade de $b$. Quando isso acontece, analisemos os únicos dois cenários possíveis:
-
-\begin{itemize}
-    \item $a$ é igual $b$
-        \newline Isso significa que $a$ estava originalmente na subárvore de $b$, já que $b$ está no caminho de $a$ até a raiz. Daqui, conclui-se que $b$ é o \LCA\ (o código não executa as linhas 6-8 e retorna $a$, dado que o valor de $a$ já está atualizado para ser igual ao de $b$).
-        
-    \item $a$ é diferente de $b$
-        \newline Neste caso $a$ e $b$ pertencem a subárvores diferentes. Logo, deve-se continuar percorrendo o caminho até a raiz pois o \LCA\ encontra-se acima de ambos $a$ e $b$.
-        
-        Como a profundidade inicial dos vértices é igual nessa etapa do algoritmo, e a profundidade de ambos sempre diminui em 1 simultaneamente, temos que as profundidades de $a$ e $b$ sempre serão iguais. Desta forma, em algum momento $a$ e $b$ serão iguais (pois ambos podem ir até a raiz, que é única). Portanto, assim que $a$ for igual à $b$ temos que este vértice é o \LCA\ pois, por ter aparecido primeiro em uma etapa onde a profundidade decresce estritamente, pode-se afirmar que é o vértice mais profundo que contêm ambos $a$ e $b$.
-\end{itemize}
-\endfalse
-
+Assim, a complexidade de tempo do algoritmo 3 é $O(n)$, onde $n$ é o número de vértices na árvore. Como não utilizamos memória adicional nesta etapa, a complexidade de memória é constante - ou seja - $O(1)$.

@@ -15,7 +15,7 @@ Vamos imaginar que temos uma função $F(x, y)$ que devolve todos os vértices n
 
 \begin{figure}[htb]
 \begin{center}
-\includegraphics[width=7cm]{images/graph_euler.png}
+\includegraphics[width=5.5cm]{images/graph_euler.png}
 \end{center}
 \caption{\label{fig:arvore-euler}Árvore enraizada de 6 vértices}
 \end{figure}
@@ -150,8 +150,6 @@ Faremos uma modificação do algoritmo 8 apresentado neste capítulo. Conforme p
 \end{algorithmic}
 \end{algorithm}
 
-\vspace{10cm}
-
 Abaixo estão os resultados de $mapa$, $arvoreSeg$ e $tempo$ após a execução deste algoritmo para a árvore apresentada na descrição deste capítulo:
 
 \begin{table}[htb]
@@ -217,6 +215,8 @@ E por este motivo podemos escolher qualquer tempo de $a$ e qualquer tempo de $b$
 \vspace{0.5cm}
 
 Outra observação deste algoritmo é que no intervalo $[tempo[a],\ tempo[b]]$ podem existir valores associados a vértices que não necessariamente estão no caminho de $a$ até $b$. Porém, isso não é um problema devido ao fato de que todos eles serão descendentes do vértice $c$ (o \LCA\ do problema) e por isso terão profundidade estritamente maior. Como o intuito desta estrutura é nos possibilitar inferir quem é o \LCA\ verificando o vértice de menor profundidade, estes nós adicionais no intervalo não fazem diferença alguma.
+
+\vspace{5cm}
 
 \section{Complexidade}
 

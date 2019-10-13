@@ -27,8 +27,6 @@ O valor de $p$ é essencial para que a otimização do algoritmo seja feita. Ent
 
 Em nosso algoritmo precisamos guardar, para cada vértice de um balde, quem é o seu ancestral mais profundo do balde anterior. Para melhor ilustrar isso, apresentamos a figura~\ref{fig:arvore-baldes}:
 
-\vspace{5cm}
-
 \begin{figure}[htb]
 \begin{center}
 \includegraphics[width=11cm]{images/tree_buckets.png}
@@ -126,6 +124,8 @@ Seja $q$ a quantidade de baldes existentes. No laço das linhas 2-5 do algoritmo
 A chamada de LCA\_Simples tem complexidade $O(h)$, onde $h$ é a altura da árvore. Entretanto, ao dividir nossa árvore em baldes, garantimos que qualquer balde terá altura $h = alturaBalde$.
 
 Assim, denotando $p = alturaBalde$, o algoritmo 5 tem complexidade de tempo $O(p + q)$. Dado que os valores $p$ e $q$ dependem diretamente da condição de inserção de um vértice em um balde, analisemos agora como fazer isso para atingir a melhor complexidade possível.
+
+\vspace{1.4cm}
 
 \subsubsection{Tamanho de um balde}
 

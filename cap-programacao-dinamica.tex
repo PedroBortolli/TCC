@@ -4,7 +4,7 @@
 
 \section{Introdução}
 
-Neste capítulo apresentaremos o primeiro algoritmo realmente eficiente para calcular o \LCA\ entre dois vértices em uma árvore enraizada utilizando programação dinâmica \cite{programacao-dinamica}. Este algoritmo terá complexidade de tempo $O(log(n))$ por consulta, onde $log(n)$ é o logaritmo na base 2 de $n$ - a quantidade de vértices na árvore.
+Neste capítulo apresentaremos o primeiro algoritmo realmente eficiente para calcular o \LCA\ entre dois vértices em uma árvore enraizada utilizando programação dinâmica \cite{programacao-dinamica}. Este algoritmo terá complexidade de tempo $O(log \n)$ por consulta.
 
 \section{Descrição}
 
@@ -16,7 +16,7 @@ Para ilustrar este pré-processamento, introduzimos a figura a seguir:
 
 \begin{figure}[htb]
 \begin{center}
-\includegraphics[width=7.2cm]{images/graph_dp.png}
+\includegraphics[width=5.85cm]{images/graph_dp.png}
 \end{center}
 \caption{\label{fig:arvore-6}Árvore enraizada de altura 6.}
 \end{figure}
@@ -60,7 +60,7 @@ Tendo $a$ e $b$ agora no mesmo nível, podemos checar se eles são iguais. Se fo
 
 \begin{figure}[htb]
 \begin{center}
-\includegraphics{images/graph_dp2.png}
+\includegraphics[width=9cm]{images/graph_dp2.png}
 \end{center}
 \caption{\label{fig:arvore-5}Árvore enraizada de altura 5.}
 \end{figure}
@@ -96,7 +96,7 @@ Vamos dividir nosso algoritmo em duas partes: pré-processamento da matriz de pr
 
 Como explicado na seção 5.2, vamos calcular os ancestrais de "potência de dois"\ de cada vértice da árvore. Assim, $pd[i][j]$ representa o ancestral $2^j$ do vértice $i$.
 
-\vspace{0.5cm}
+\vspace{0.25cm}
 
 Primeiro, para o pré-processamento, vamos apresentar a seguinte recorrência:
 
@@ -107,7 +107,7 @@ Primeiro, para o pré-processamento, vamos apresentar a seguinte recorrência:
   \end{cases}
 \end{center}
 
-\vspace{0.2cm}
+\vspace{0.1cm}
 
 Segue o código que preenche a matriz $pd$ linha a linha:
 
@@ -128,9 +128,8 @@ Segue o código que preenche a matriz $pd$ linha a linha:
 \end{algorithmic}
 \end{algorithm}
 
-Feito isso, agora podemos escrever o código que responderá as consultas de \LCA\ entre dois vértices $a$ e $b$:
+Agora podemos escrever o código que responderá as consultas de \LCA\ entre $a$ e $b$:
 
-\vspace{0.2cm}
 
 \begin{algorithm}[H]
 \caption{Obtenção do \LCA}
@@ -188,8 +187,6 @@ No laço da linha 5 percorremos o caminho do vértice $b$ até a raiz, subindo e
 Nas linhas 9 e 10 é verificado se $a = b$. Como $a$ e $b$ agora estão na mesma altura da árvore, eles podem coincidir (ou seja, $b$ estava na subárvore de $a$) - concluindo que obtivemos o \LCA\ e podemos parar o algoritmo.
 
 Caso a execução do código alcance a linha 11, sabemos então que $a$ e $b$ ainda não se encontraram (e portanto ainda não sabemos quem é o \LCA). No laço da linha 11 iteramos de $logNiveis$ até 0 para verificar todos os $ancestrais\ 2^i$ de $a$ e $b$ em ordem decrescente. Na linha 12 é verificado se $ancestral_a\ 2^i$ difere de $ancestral_b\ 2^i$. Caso isso se confirme, sabemos que se for dado um pulo de tamanho $2^i$ ainda não teremos encontrado o \LCA, já que se se tais ancestrais fossem iguais poderíamos ter encontrado o \LCA\ ou qualquer vértice acima do \LCA\ no caminho da raiz. Então, atualizamos ambos $a$ e $b$ para seus respectivos ancestrais e repetimos isso até o laço acabar. No final deste laço saberemos que $a$ e $b$ estarão nos vértices menos profundos dos seus caminhos até a raiz que ainda não são o \LCA\ entre eles (pelo mesmo argumento de que conseguimos chegar em qualquer altura dando pulos de tamanho potência de dois). Assim, basta retornar o pai de qualquer um deles que este será o \LCA\ de fato.
-
-\vspace{10cm}
 
 \section{Complexidade}
 

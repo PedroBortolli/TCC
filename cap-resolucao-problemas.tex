@@ -6,6 +6,8 @@ O intuito deste capítulo é resolver alguns problemas de Maratona de Programaç
 
 \section{ANTS10 - Colônia de Formigas  (SPOJ Brasil)}
 
+{\setstretch{1}
+
 \textit{URL: \url{https://br.spoj.com/problems/ANTS10/}}
 
 \vspace{0.3cm}
@@ -21,7 +23,7 @@ A colônia de formigas foi criada como uma série de $N$ formigueiros conectados
 
 O seu trabalho é, dada a estrutura de uma colônia e um conjunto de consultas, calcular, para cada uma das consultas, o menor caminho entre pares de formigueiros. O comprimento do caminho é a soma dos comprimentos de todos os túneis que necessitam ser visitados.
 
-\vspace{0.75cm}{\large{\textbf{Entrada}}}\vspace{0.2cm}
+\vspace{1.75cm}{\large{\textbf{Entrada}}}\vspace{0.2cm}
 
 Cada caso de teste se estende por várias linhas. A primeira linha contém um inteiro $N$ representando a quantidade de formigueiros na colônia $(2 \leq N \leq 105)$. Cada uma das próximas $N-1$ linhas contém dois inteiros que descrevem um túnel. A linha $i$, para $1 \leq i \leq N-1$, contém $Ai$ e $Li$, indicando que o formigueiro $i$ foi conectado diretamente ao formigueiro $Ai$ por um túnel de comprimento $Li$ $(0 \leq Ai\leq i-1$ e $1 \leq Li \leq 109)$. A próxima linha contém um inteiro $Q$ representando o número de consultas que seguem $(1 \leq Q \leq 105)$. Cada uma das $Q$ linhas seguintes descreve uma consulta e contém dois inteiros distintos $S$ e $T$ $(0 \leq S,T \leq N-1)$, representando, respectivamente, os formigueiros de origem e destino.
 
@@ -79,7 +81,7 @@ Para cada caso de teste, imprima uma única linha com $Q$ inteiros, os comprimen
 \end{minipage}%
 
 \vspace{-0.4cm}
-\end{mdframed}
+\end{mdframed}}
 
 \vspace{10cm}
 
@@ -96,7 +98,7 @@ Vamos então agora analisar a árvore do exemplo da entrada do problema e a prim
 
 \begin{figure}[htb]
 \begin{center}
-\includegraphics[width=5cm]{images/ants10-graph.png}
+\includegraphics[width=7cm]{images/ants10-graph.png}
 \end{center}
 \caption{\label{fig:arvore-euler2}Exemplo de entrada do problema com o comprimento do caminho de  $2$ a $3$}
 \end{figure}
@@ -147,10 +149,12 @@ Basta chamar a função $CalculaSoma$ com a raiz e $0$ (pois o custo de chegar n
 
 \begin{figure}[htb]
 \begin{center}
-\includegraphics[width=4cm]{images/ants10-graph2.png}
+\includegraphics[width=5.85cm]{images/ants10-graph2.png}
 \end{center}
 \caption{\label{fig:arvore-euler2}Soma acumulada de cada vértice}
 \end{figure}
+
+\vspace{2cm}
 
 Agora finalmente conseguimos calcular o comprimento do caminho entre quaisquer dois vértices $a$ e $b$ da seguinte maneira:
 
@@ -173,9 +177,11 @@ O código completo (em C++) para este problema encontra-se no GitHub:
 
 \url{https://github.com/PedroBortolli/TCC/blob/master/codes/problemas/ANTS10.cpp}
 
-\vspace{10cm}
+\vspace{20cm}
 
 \section{QTREE2 - Query on a tree II  (SPOJ)}
+
+{\setstretch{1}
 
 \textit{URL: \url{https://www.spoj.com/problems/QTREE2/}}
 
@@ -248,7 +254,7 @@ Imprima uma linha em branco após cada caso de teste.
 \end{minipage}%
 
 \vspace{-0.4cm}
-\end{mdframed}
+\end{mdframed}}
 
 Neste problema queremos duas coisas:
 
@@ -272,9 +278,11 @@ Assim, para obter o $k-$ésimo vértice temos que considerar dois casos:
 
 Agora, sabendo em qual caminho devemos procurar, podemos utilizar os ancestrais de potência de dois já pré-calculados para obter nossa resposta. Vamos supor que o $k-$ésimo vértice está no caminho de $a$ até o \LCA. Podemos, a partir do nó $a$, executar o algoritmo de subir sucessivas potências de dois até alcançar o vértice que está $k-1$ níveis acima de si (pois quando $k = 1$ o vértice a ser retornado é o próprio $a$). Por exemplo, quando $k = 4$, sabemos que queremos o vértice $3$ níveis acima de $a$. Assim, podemos obter o vértice $2$ níveis acima de $a$, e depois o vértice $1$ nível acima deste novo nó encontrado. O resultado será o vértice $2 + 1 = 3$ níveis acima de $a$.
 
+\vspace{10cm}
+
 \begin{figure}[htb]
 \begin{center}
-\includegraphics[width=4.25cm]{images/qtree2-graph.png}
+\includegraphics[width=6.25cm]{images/qtree2-graph.png}
 \end{center}
 \caption{\label{fig:arvore-euler2}Obtenção do quarto vértice no caminho de 7 até 5}
 \end{figure}
@@ -286,6 +294,8 @@ $alvo = quantidadeA + quantidadeB - k$
 \end{center}
 
 Agora o valor da variável $alvo$ é a quantidade de níveis que precisamos subir a partir de $b$ para encontrar o $k-$ésimo vértice do caminho de $a$ até $b$.
+
+Vamos agora escrever o código que encontra o $k-$ésimo vértice, como discutido nesta seção:
 
 \begin{algorithm}[H]
 \caption{Encontrando o $k-$ésimo vértice do caminho de $a$ até $b$}
