@@ -4,11 +4,11 @@
 
 \section{Introdução}
 
-Neste capítulo apresentaremos o primeiro algoritmo realmente eficiente para calcular o \LCA\ entre dois vértices em uma árvore enraizada utilizando programação dinâmica \cite{programacao-dinamica}. Este algoritmo terá complexidade de tempo $O(log \n)$ por consulta.
+Neste capítulo apresentaremos o primeiro algoritmo de complexidade sub-polinomial ara calcular o \LCA\ entre dois vértices em uma árvore enraizada. Este algoritmo terá complexidade de tempo $O(log \n)$ por consulta. A técnica utilizada para isso é programação dinâmica, e para mais informações sobre ela consulte \cite{programacao-dinamica}. 
 
 \section{Descrição}
 
-A ideia deste algoritmo segue a mesma dos capítulos anteriores: primeiro são pré-calculados ancestrais dos vértices para depois realizar as consultas.
+A ideia segue pré-calcular os ancestrais dos vértices para depois realizar as consultas.
 
 Para cada vértice serão pré-computados os ancestrais cuja profundidade na árvore é menor do que a sua em uma potência de dois - ou seja - 1, 2, 4, 8, ... , $h$ níveis acima dele, onde $h$ é a maior potência de dois que não ultrapasse a altura da árvore. Em outras palavras, para cada vértice serão pré-calculados até $log(n)$ ancestrais diferentes.
 
@@ -50,11 +50,11 @@ Após o pré-processamento, teríamos como os ancestrais, para os vértices 12 e
 
 \end{itemize}
 
-Por conveniência, a partir de agora vamos nos referir a cada ancestral de um vértice $v$ como $ancestral_v(2^i)$ para todo inteiro $i$.
+Por conveniência, a partir de agora vamos nos referir a cada ancestral de um vértice $v$ como $ancestral_v(2^i)$ para todo inteiro $i \geq 0$.
 
 Agora, para calcular o \LCA\ entre dois vértices $a$ e $b$ faremos o que já vimos em todos os capítulos anteriores: vamos caminhar até a raiz com ambos. A maneira que faremos isso desta vez é dando pulos de tamanho "potência de dois"\  com auxílio dos valores que já foram pré-computados. Além disso, cada pulo é de um tamanho diferente.
 
-Vamos assumir sem perda de generalidade que $b$ é mais profundo do que $a$. Inicialmente, são feitos sucessivos pulos suficientes para que $a$ e $b$ estejam exatamente no mesmo nível. Por exemplo, se a profundidade de $a$ é 3 e a de $b$ é 6, devemos subir $b$ em $6 - 3 = 3$ níveis: o que equivale a um pulo de tamanho 2 e um pulo de tamanho 1. Provaremos adiante que sempre conseguimos igualar os níveis dos vértices dando pulos diferentes de tamanho de alguma potência de dois cada.
+Vamos assumir, sem perda de generalidade, que $b$ é mais profundo do que $a$. Inicialmente, são feitos sucessivos pulos suficientes para que $a$ e $b$ estejam exatamente no mesmo nível. Por exemplo, se a profundidade de $a$ é 3 e a de $b$ é 6, devemos subir $b$ em $6 - 3 = 3$ níveis: o que equivale a um pulo de tamanho 2 e um pulo de tamanho 1. Provaremos adiante que sempre conseguimos igualar os níveis dos vértices dando pulos diferentes de tamanho de alguma potência de dois cada.
 
 Tendo $a$ e $b$ agora no mesmo nível, podemos checar se eles são iguais. Se forem, isso significa que $a$ estava originalmente no caminho de $b$ até a raiz e que portanto ela é o \LCA. Caso contrário, devemos encontrar o maior tamanho de um pulo para subir simultaneamente os vértices $a$ e $b$ de forma que ainda sejam diferentes. Encontraremos este valor dando pulos distintos de tamanho de alguma potência de dois. A figura a seguir um possível cenário:
 
@@ -81,7 +81,7 @@ Em outras palavras, o que encontramos são os dois vértices distintos mais pró
 Voltando à figura \ref{fig:arvore-6}, vamos simular os passos completos para encontrar o \LCA(12, 15):
 
 \begin{itemize}
-    \item Vértices 12 e 15 não estão na mesma altura. O vértice 12 é mais profundo, então vamos subi-lo em direção à raiz.
+    \item Vértices 12 e 15 não estão na mesma altura. O vértice 12 é mais profundo, então vamos subir em direção à raiz.
     \item A diferença das profundidades de 12 e 15 é de um. Então agora seu novo valor é $ancestral_{12}(1) =$ vértice 11.
     \item Agora, vamos determinar qual é o o maior inteiro $i$ tal que $ancestral_{11}(i) \neq ancestral_{15}(i)$. Testando as potências de dois, da maior para a menor, tentaremos primeiro subir 4 níveis - o que resultaria em ambos irem até o vértice $1$. Então, testamos 2 níveis - o que resulta nos vértices $4$ e $6$, respectivamente. Como são distintos, vamos para eles. Finalmente, tentamos subir 1 nível - o que resulta nos vértices $2$ e $3$ - ainda distintos. Vamos para eles.
     \item Finalmente, sabemos que os últimos dois vértices antes do \LCA\ são $2$ e $3$, então basta retornar o pai de qualquer um deles para obter o \LCA: o vértice $1$.
@@ -94,16 +94,16 @@ Voltando à figura \ref{fig:arvore-6}, vamos simular os passos completos para en
 
 Vamos dividir nosso algoritmo em duas partes: pré-processamento da matriz de programação dinâmica e a função de obtenção do \LCA\ entre dois vértices $a$ e $b$.
 
-Como explicado na seção 5.2, vamos calcular os ancestrais de "potência de dois"\ de cada vértice da árvore. Assim, $pd[i][j]$ representa o ancestral $2^j$ do vértice $i$.
+Como explicado na seção 5.2, vamos calcular os ancestrais de "potência de dois"\ de cada vértice da árvore. Assim, $anc[i][j]$ representa o ancestral $2^j$ do vértice $i$.
 
 \vspace{0.25cm}
 
 Primeiro, para o pré-processamento, vamos apresentar a seguinte recorrência:
 
 \begin{center}
-  pd[i][j]=\begin{cases}
+  anc[i][j]=\begin{cases}
     pai[i], & \text{se $j = 0$}.\\
-    pd[pd[i][j-1]][j-1], & \text{caso contrário}.
+    anc[anc[i][j-1]][j-1], & \text{caso contrário}.
   \end{cases}
 \end{center}
 
@@ -118,9 +118,9 @@ Segue o código que preenche a matriz $pd$ linha a linha:
     \For{cada $nivel$ em $logNiveis$}
         \For{cada $vertice$ em $vertices$}
             \If{$nivel = 0$}
-                \State $pd[vertice][nivel] \rec pai[vertice]$
+                \State $anc[vertice][nivel] \rec pai[vertice]$
             \Else
-                \State $pd[vertice][nivel] \rec pd[pd[vertice][nivel-1]][nivel-1]$
+                \State $anc[vertice][nivel] \rec anc[anc[vertice][nivel-1]][nivel-1]$
             \EndIf
         \EndFor
     \EndFor
@@ -141,7 +141,7 @@ Agora podemos escrever o código que responderá as consultas de \LCA\ entre $a$
     \State $i \rec logNiveis$
     \While { $i \geq 0$}
         \If{$prof[bAtual] - 2^i \geq prof[a]$}
-            \State $b \rec pd[b][i]$
+            \State $b \rec anc[b][i]$
         \EndIf
         \vspace{-0.2cm}
         \State $i \rec i - 1$
@@ -151,9 +151,9 @@ Agora podemos escrever o código que responderá as consultas de \LCA\ entre $a$
     \EndIf
     \State $i \rec logNiveis$
     \While { $i \geq 0$}
-        \If{$pd[a][i] \neq pd[b][i]$}
-            \State $a \rec pd[a][i]$
-            \State $b \rec pd[b][i]$
+        \If{$anc[a][i] \neq anc[b][i]$}
+            \State $a \rec anc[a][i]$
+            \State $b \rec anc[b][i]$
         \EndIf
         \vspace{-0.2cm}
         \State $i \rec i - 1$

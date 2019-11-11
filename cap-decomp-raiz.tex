@@ -1,5 +1,5 @@
 %% ------------------------------------------------------------------------- %%
-\chapter{Decomposição em Raiz}
+\chapter{Decomposição em Baldes}
 \label{cap:decomp-raiz}
 
 \section{Introdução}
@@ -67,9 +67,9 @@ Agora, basta percorrer os caminhos de \textbf{7} e \textbf{8} até a raiz natura
 
 Utilizaremos os algoritmos 2 e 3 demonstrados anteriormente. Veremos que precisamos de poucas adições neles para que fiquem otimizados.
 
-\hspace{1cm}
+Como dito anteriormente, além da profundidade, também guardaremos para cada vértice quem é o seu ancestral mais profundo do balde anterior utilizando os vetores globais $profundidade$ e $baldeAnterior$, respectivamente. Além disso, toda vez que o nível atual for múltiplo da altura do balde permitido ($p$ citado anteriormente)  "criaremos"\ um novo balde.
 
-Como dito anteriormente, também guardaremos para cada vértice quem é o seu ancestral mais profundo do balde anterior. Além disso, toda vez que o nível atual for múltiplo da altura do balde permitido ($p$ citado anteriormente)  "criaremos"\ um novo balde.
+\vspace{0.3cm}
 
 \begin{algorithm}[H]
 \caption{Modificação do algoritmo 2}
@@ -91,6 +91,8 @@ Como dito anteriormente, também guardaremos para cada vértice quem é o seu an
 
 Para a função que determina o \LCA, primeiro faremos com que $a$ e $b$ estejam no mesmo balde cujo ancestral anterior seja o mesmo para ambos. Após isso, basta chamar a função de \LCA\ simples, demonstrada no algoritmo 3.
 
+\vspace{0.3cm}
+
 \begin{algorithm}[H]
 \caption{\LCA\ utilizando o conceito de baldes}
 \begin{algorithmic}[1]
@@ -108,7 +110,7 @@ Para a função que determina o \LCA, primeiro faremos com que $a$ e $b$ estejam
 
 \subsection{Corretude}
 
-A ideia deste algoritmo é similar a apresentada no algoritmo 3: após a execução do laço da linha 2 teremos dois vértices no mesmo balde cujos ancestrais do balde anterior são os mesmos. Afinal, sabemos que percorrer o caminho de um vértice pulando de balde em balde resultará no mesmo destino do algoritmo 3, que caminha vértice após vértice: a raiz. Isso se deve ao fato de que no algoritmo 4 apresentado nessa seção, o objeto $baldeAnterior$ apenas serve como um encurtador de caminhos - mais precisamente deixando cada pulo em um caminho de  tamanho $alturaBalde$ (isto é, a partir de um vértice de profundidade $p$ chegamos em outro de profundidade $p - alturaBalde$).
+Assumindo o algoritmo 4 como correto, a ideia do algoritmo 5 é similar à apresentada no algoritmo 3: após a execução do laço da linha 2 teremos dois vértices no mesmo balde cujos ancestrais do balde anterior são os mesmos. Afinal, sabemos que percorrer o caminho de um vértice pulando de balde em balde resultará no mesmo destino do algoritmo 3, que caminha vértice após vértice: a raiz. Isso se deve ao fato de que no algoritmo 4 apresentado nessa seção, o objeto $baldeAnterior$ apenas serve como um encurtador de caminhos - mais precisamente deixando cada pulo em um caminho de  tamanho $alturaBalde$ (isto é, a partir de um vértice de profundidade $p$ chegamos em outro de profundidade $p - alturaBalde$).
 
 A linha 5 do código atualiza o valor de $a$ para o próximo vértice do seu caminho encurtado até a raiz. Sabemos que $a$ sempre é mais profundo do que $b$ já que as linhas 3 e 4 trocam os vértices $a$ e $b$ caso o segundo seja mais profundo do que o primeiro.
 
@@ -117,15 +119,15 @@ O código termina com uma chamada da função LCA\_Simples já provada no capít
 \subsection{Complexidade}
 \label{complexidade-balde}
 
-O algoritmo 4 executa uma simples busca em profundidade com operações de tempo constante (linhas 2-7) e assim sua complexidade de tempo é $O(n+m)$, onde $n$ é aquantidade de vértices e $m$ a quantidade de arestas. A complexidade de espaço é $O(n)$.
+O algoritmo 4 executa uma simples busca em profundidade com operações de tempo constante (linhas 2-7) e assim sua complexidade de tempo é $O(n+m)$, onde $n$ é a quantidade de vértices e $m$ a quantidade de arestas. A complexidade de espaço é $O(n)$.
 
 Seja $q$ a quantidade de baldes existentes. No laço das linhas 2-5 do algoritmo 5, sendo $q_a$ e $q_b$ as quantidades de baldes acima de $a$ e $b$, respectivamente, em seus caminhos até a raiz, podemos dizer que são executadas $q_a + q_b$ operações. No pior caso, $q_a = q_b = q$, e portanto essa etapa do algoritmo é $O(q)$.
 
-A chamada de LCA\_Simples tem complexidade $O(h)$, onde $h$ é a altura da árvore. Entretanto, ao dividir nossa árvore em baldes, garantimos que qualquer balde terá altura $h = alturaBalde$.
+A chamada de LCA\_Simples tem complexidade $O(h)$, onde $h$ é a altura da árvore (no pior caso a quantidade de vértices $n = h$, então é correto assumir tal complexidade). Entretanto, ao dividir nossa árvore em baldes, garantimos que qualquer balde terá altura $h = alturaBalde$.
 
 Assim, denotando $p = alturaBalde$, o algoritmo 5 tem complexidade de tempo $O(p + q)$. Dado que os valores $p$ e $q$ dependem diretamente da condição de inserção de um vértice em um balde, analisemos agora como fazer isso para atingir a melhor complexidade possível.
 
-\vspace{1.4cm}
+\vspace{0.8cm}
 
 \subsubsection{Tamanho de um balde}
 
@@ -134,7 +136,7 @@ Para que o algoritmo descrito fique de fato mais eficiente do que o do capítulo
 Queremos minimizar a soma $p + q$, (duas fases do algoritmo: avaliar $q$ baldes e percorrer $p$ vértices). Além disso, também vale que $pq = h$, onde $h$ é a altura da árvore. Então, nosso problema resume-se a:
 
 \centerline{minimizar $p + q$}
-\centerline{dado que $pq = h$}
+\centerline{dado que $pq \leq h$}
 
 \hspace{1cm}
 

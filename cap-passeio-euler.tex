@@ -4,7 +4,7 @@
 
 \section{Introdução}
 
-Agora que vimos um algoritmo eficiente que resolve o problema do \LCA\, vamos explorar uma outra técnica que tem mesmo tempo de complexidade. Neste capítulo estudaremos um algoritmo capaz de resolver problemas um pouco mais complexos em que, por exemplo, é necessário atualizar o valor de um nó da árvore rapidamente (diferente dos outros algoritmos em que a árvore deveria ser sempre estática - isto é - sem modificações). No final deste capítulo será melhor explicado como isso pode ser útil e mostraremos uma aplicação prática.
+Agora que vimos um algoritmo eficiente que resolve o problema do \LCA\, vamos explorar uma outra técnica que tem o mesmo tempo de complexidade. Neste capítulo estudaremos um algoritmo capaz de resolver problemas um pouco mais complexos em que, por exemplo, é necessário atualizar o valor de um nó da árvore rapidamente (diferente dos outros algoritmos em que a árvore deve ser sempre estática - isto é - sem modificações).
 
 
 \section{Descrição}
@@ -15,7 +15,7 @@ Vamos imaginar que temos uma função $F(x, y)$ que devolve todos os vértices n
 
 \begin{figure}[htb]
 \begin{center}
-\includegraphics[width=5.5cm]{images/graph_euler.png}
+\includegraphics[width=5.75cm]{images/graph_euler.png}
 \end{center}
 \caption{\label{fig:arvore-euler}Árvore enraizada de 6 vértices}
 \end{figure}
@@ -40,14 +40,14 @@ Profundidade & 1 & 2 & 2 & 3 & 3 & 4 \\ \hline
 
 
 
-Agora, para saber o \LCA\ entre dois nós $a$ e $b$, usaremos os vértices retornados pela chamada da função $F$ para eles (denotaremos o conjunto destes vértices de $V$). Afinal, pela definição o \LCA$(a, b)$ é o vértice menos profundo que contém $a$ e $b$ em sua subárvore. Isto é, o vértice menos profundo que está no caminho de $a$ até $b$.
+Agora, para saber o \LCA\ entre dois nós $a$ e $b$, usaremos os vértices retornados pela chamada da função $F(a, b)$ para eles (denotaremos o conjunto destes vértices de $P(caminho)$). Afinal, pela definição o \LCA$(a, b)$ é o vértice menos profundo que contém $a$ e $b$ em sua subárvore. Isto é, o vértice menos profundo que está no caminho de $a$ até $b$.
 
-Assim, basta verificar qual é o vértice de menor profundidade dentre os nós de $V$: no primeiro exemplo, tal vértice é 1 - enquanto no segundo exemplo é 2. Podemos verificar que eles são, de fato, os respectivos \LCA s de seus problemas.
+Assim, basta verificar qual é o vértice de menor profundidade dentre os nós de $P(caminho)$: no primeiro exemplo, tal vértice é 1 - enquanto no segundo exemplo é 2. Podemos verificar que eles são, de fato, os respectivos \LCA s de seus problemas.
 
 
 \section{Obtendo todos os vértices de qualquer caminho}
 
-Previamente assumimos que existe uma função F que retorna todos os vértices do caminho entre dois nós $a$ e $b$. Entretanto, ainda não estudamos como escrever esta função.
+Previamente assumimos que existe uma função F que retorna todos os vértices do caminho entre dois nós $a$ e $b$ de uma árvore. Entretanto, ainda não estudamos como escrever esta função.
 
 Toda vez que queremos fazer uma consulta entre dois vértices $a$ e $b$, poderíamos percorrer o caminho entre estes dois vértices visitando todos os nós entre eles um a um. Ou seja, um algoritmo linear - ineficiente para nosso problema.
 
@@ -62,7 +62,7 @@ A ideia é rodar uma DFS a partir da raiz contando um tempo crescente conforme a
 
 \begin{itemize}
     \item Anotamos o tempo em que iniciamos a busca em cada filho de um dado vértice $x$
-    \item Anotamos o tempo em que terminamos a busca de cada filho de um vértice $x$
+    \item Anotamos o tempo em que terminamos a busca de todos os filhos de $x$
 \end{itemize}
 
 Entender a ideia deste algoritmo é muito mais fácil introduzindo o código e um exemplo. Vamos então apresentar a DFS que executa o algoritmo mencionado. Para cada tempo decorrido guardamos qual foi o vértice visitado naquele momento. Note que é necessário que exista uma variável global $contador$ inicializada com 1.
@@ -108,15 +108,15 @@ Vamos simular o resultado da consulta nessa estrutura para os vértices $4$ e $5
 
 Por fim, basta verificar qual desses vértices possui a menor altura - este será o \LCA. No exemplo, o vértice com tal propriedade é $2$, e de fato podemos verificar que ele é o \LCA\ entre os nós $4$ e $5$.
 
-Note que podem ser retornados vértices que não pertencem ao caminho de entre os dois nós consultados. No exemplo, o vértice $6$ não está no caminho entre $4$ e $5$ mas está contido no intervalo. Entretanto, podemos observar que a profundidade dele é maior do que ambos $4$ e $5$ (afinal, ele é filho de $4$) - o que nos diz que sua presença no intervalo não faz diferença para a obtenção do \LCA. Provaremos o porque deste algoritmo sempre funcionar na seção 6.6 deste capítulo.
+Note que podem ser retornados vértices que não pertencem ao caminho de entre os dois nós consultados. No exemplo, o vértice $6$ não está no caminho entre $4$ e $5$ mas está contido no intervalo. Entretanto, podemos observar que a profundidade dele é maior do que ambos $4$ e $5$ (afinal, ele é filho de $4$) - o que nos diz que sua presença no intervalo não faz diferença para a obtenção do \LCA. Provaremos o porquê deste algoritmo sempre funcionar na seção 6.6 deste capítulo.
 
 \section{Otimização com árvore de segmentos}
 
 Embora agora conseguimos obter todos os vértices de qualquer caminho, ainda não conseguimos calcular de forma eficiente qual é o vértice de menor profundidade do conjunto $V$. Isto é, no pior caso temos $n$ vértices em um caminho e teríamos que percorrer todos estes nós verificando um a um qual é o de menor profundidade, levando a um algoritmo de tempo $O(n)$.
 
-Porém, usando uma famosa estrutura de dados chamada árvore de segmentos \cite{arvore-segmentos} (do inglês, \textit{segment tree}) conseguimos obter o vértice de menor profundidade em tempo $O(log\ n)$. Essa estrutura permite fazer consultas de operações cumulativas (adição, máximo, mínimo, etc) em um intervalo de uma lista de maneira eficiente.
+Porém, usando uma famosa estrutura de dados chamada árvore de segmentos (do inglês, \textit{segment tree}), discutida em \cite{arvore-segmentos}, conseguimos obter o vértice de menor profundidade em tempo $O(log\ n)$. Essa estrutura permite fazer consultas de operações cumulativas (adição, máximo, mínimo, etc) em um intervalo de uma lista de maneira eficiente.
 
-Como o objetivo deste trabalho é focar exclusivamente em resolver o problema do ancestral em comum mais próximo, não discutiremos em detalhes como essa estrutura funciona, tampouco escreveremos seu código. Ao invés, assumiremos que temos as seguintes funções de nossa árvore de segmentos:
+Como o objetivo deste trabalho é focar exclusivamente em resolver o problema do ancestral comum mais próximo, não discutiremos em detalhes como essa estrutura funciona, tampouco escreveremos seu código. Ao invés, assumiremos que temos as seguintes funções de nossa árvore de segmentos, que armazenará as profundidas dos nós:
 
 \begin{itemize}
     \item \textbf{Constrói(lista)}: monta uma árvore de segmentos a partir de uma lista de valores. Leva tempo $O(n)$ onde $n$ é o tamanho da lista.
@@ -170,7 +170,7 @@ Algumas observações sobre o que fizemos:
 \begin{itemize}
     \item $mapa[x]$ guarda qual é o vértice visitado no instante de tempo $x$
     \item $arvoreSeg[x]$ guarda qual é a profundidade do vértice obtido ao consultar $mapa[x]$
-    \item $tempo[v]$ guarda o último tempo registrado do vértice $v$ (para que depois possamos usá-lo na consulta, já que qualquer tempo nos basta) - ou seja - sempre o valor mais recente de $contador$
+    \item $tempo[v]$ guarda o último tempo registrado do vértice $v$ (para que depois possamos usá-lo na consulta, já que qualquer tempo nos basta) - ou seja - sempre o maior valor de $contador$
 \end{itemize}
 
 \vspace{0.5cm}

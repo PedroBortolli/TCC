@@ -43,8 +43,9 @@ Suponha por absurdo que existam dois vértices $x$ e $y$ que sejam simultaneamen
 
 Agora que sabemos que para todo par de vértices em uma árvore enraizada sempre existe um único \LCA\, vamos introduzir um algoritmo simples inicial para calculá-lo.
 
-Inicialmente, usaremos um mapa (chave, valor) para guardar a profundidade de cada vértice em relação à raiz. Para preencher este mapa, basta executar uma busca em profundidade (\emph{DFS - Depth First Search}) a partir da raiz.
+Inicialmente, usaremos um dicionário para guardar a profundidade de cada vértice em relação à raiz. Para preencher este dicionário (que será global e chamado de $profundidade$), basta executar uma busca em profundidade (\emph{DFS - Depth First Search}) a partir da raiz:
 
+\vspace{0.2cm}
 
 \begin{algorithm}[H]
 \caption{Cálculo da profundidade de cada vértice usando uma \emph{DFS}}
@@ -52,19 +53,20 @@ Inicialmente, usaremos um mapa (chave, valor) para guardar a profundidade de cad
 \Function{\textsc{CalculaProfundidade}}{vertice,\ nivel}
     \State $profundidade[vertice] \rec nivel$
     \For{cada $filho$ em $filhos[vertice]$}
-        \State $CalculaProfundidade(filho,\ nivel+1,\ profundidade)$
+        \State $CalculaProfundidade(filho,\ nivel+1)$
     \EndFor
 \EndFunction
 \end{algorithmic}
 \end{algorithm}
 
 
-Deve-se inicializar $profundidade$ com zeros (vamos usar este valor como um indicador de que a profundidade de um vértice ainda não foi calculada) e chamar a função com os argumentos $(raiz, 1, profundidade)$.
+Deve-se inicializar o dicionário global $profundidade$ com zeros (vamos usar este valor como um indicador de que a profundidade de um vértice ainda não foi calculada) e chamar a função com os argumentos $(raiz, 1)$.
 
 A complexidade de tempo de uma busca em profundidade é $O(n+m)$, onde $n$ é a quantidade de vértices e $m$ a quantidade de arestas. A complexidade de espaço é $O(n)$.
 
-Agora, considere o seguinte algoritmo que encontra o \LCA\ entre dois vértices $a$ e $b$:
+Agora, uma vez chamada a função $CalculaProfundidade$, considere o seguinte algoritmo que encontra o \LCA\ entre dois vértices $a$ e $b$:
 
+\vspace{0.2cm}
 
 \begin{algorithm}[H]
 \caption{Determina o \LCA\ entre dois vértices}
@@ -90,9 +92,9 @@ Agora, considere o seguinte algoritmo que encontra o \LCA\ entre dois vértices 
 
 Nosso algoritmo parte do pressuposto de que $a$ e $b$ estão na mesma árvore.
 
-O código fixa o vértice $a$ para ser mais (ou pelo menos igualmente) profundo do que $b$ (linhas 2 e 3). A partir disto, sabemos que ao sair do primeiro laço teremos que o vértice atualizado $a$ tem profundidade igual a de $b$. Afinal, no início de cada iteração sempre vale que $profundidade[a] - profundidade[b] \geq 0$. Além disso, $profundidade[b]$ não é alterada enquanto $profundidade[a]$ sempre decresce em 1. Assim, quando a execução do laço é interrompida temos que $profundidade[a] - profundidade[b] = 0$, o que implica que  $profundidade[a] = profundidade[b]$.
+O código fixa o vértice $a$ para ser mais (ou pelo menos igualmente) profundo do que $b$ (linhas 2 e 3). A partir disto, sabemos que ao sair do primeiro laço teremos que o vértice atualizado $a$ tem profundidade igual à de $b$. Afinal, no início de cada iteração sempre vale que $profundidade[a] - profundidade[b] \geq 0$. Além disso, $profundidade[b]$ não é alterada enquanto $profundidade[a]$ sempre decresce em 1. Assim, quando a execução do laço é interrompida temos que $profundidade[a] - profundidade[b] = 0$, o que implica que  $profundidade[a] = profundidade[b]$.
 
-A última etapa do algoritmo parte do princípio de que, como $a$ e $b$ estão na mesma árvore e possuem mesma profundidade, os caminhos para seus pais os levam até a raiz simultaneamente. Assim, o último laço é interrompido quando $a = b$, que pela definição é o \LCA\ entre eles por ter sido o primeiro vértice que está tanto no caminho de $a$ quanto de $b$ para a raiz.
+A última etapa do algoritmo parte do princípio de que, como $a$ e $b$ estão na mesma árvore e possuem mesma profundidade, os caminhos para seus pais os levam até a raiz simultaneamente. Assim, como o invariante do segundo laço é $profundidade[a] = profundidade[b]$, e sabemos que $a$ e $b$ estão na mesma árvore, então pela definição encontramos o \LCA\ entre eles por ter sido o primeiro vértice que está tanto no caminho de $a$ quanto de $b$ para a raiz.
 
 
 \subsection{Complexidade}

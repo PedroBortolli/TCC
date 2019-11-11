@@ -2,7 +2,7 @@
 \chapter{Resolução de problemas}
 \label{cap:resolucao-problemas}
 
-O intuito deste capítulo é resolver alguns problemas de Maratona de Programação. Resolveremos questões do juíz online SPOJ, um dos mais famosos na Internet, com milhares de problemas disponíveis para praticar. Além de explicar a ideia de como resolver o problema, também apresentaremos pseudocódigos das partes mais cruciais dos problemas. Os códigos completos (em C++) se encontram no GitHub, com a URL específica no fim de cada explicação.
+O intuito deste capítulo é utilizar os conceitos sobre \LCA\ vistos nos capítulos anteriores para resolver alguns problemas de Maratona de Programação. Resolveremos questões do juíz online SPOJ, um dos mais famosos na Internet, com milhares de problemas disponíveis para praticar. Além de explicar a ideia de como resolver o problema, também apresentaremos pseudocódigos das partes mais cruciais dos problemas. Os códigos completos (em C++) se encontram no GitHub, com a URL específica no fim de cada explicação.
 
 \section{ANTS10 - Colônia de Formigas  (SPOJ Brasil)}
 
@@ -19,7 +19,7 @@ O intuito deste capítulo é resolver alguns problemas de Maratona de Programaç
 
 Um grupo de formigas está muito orgulhoso pois construíram uma grande e magnífica colônia. No entanto, seu enorme tamanho tem se tornado um problema, pois muitas formigas não sabem o caminho entre algumas partes da colônia. Elas precisam de sua ajuda desesperadamente!
 
-A colônia de formigas foi criada como uma série de $N$ formigueiros conectados por túneis. As formigas, obssessivas como são, numeraram os formigueiros sequencialmente à medida que os construiam. O primeiro formigueiro, numerado $0$, não necessitava nenhum túnel, mas para cada um dos formigueiros subsequentes, $1$ até $N-1$, as formigas também construíram um único túnel que conectava o novo formigueiro a um dos formigueiros existentes. Certamente, esse túnel era suficiente para permitir que qualquer formiga visitasse qualquer formigueiro já construído, possivelmente passando através de outros formigueiros pelo percurso, portanto elas não se preocupavam em fazer novos túneis e continuavam construindo mais formigueiros.
+A colônia de formigas foi criada como uma série de $N$ formigueiros conectados por túneis. As formigas, obssessivas como são, numeraram os formigueiros sequencialmente à medida que os construíam. O primeiro formigueiro, numerado $0$, não necessitava nenhum túnel, mas para cada um dos formigueiros subsequentes, $1$ até $N-1$, as formigas também construíram um único túnel que conectava o novo formigueiro a um dos formigueiros existentes. Certamente, esse conjunto de túneis era suficiente para permitir que qualquer formiga visitasse qualquer formigueiro já construído, possivelmente passando através de outros formigueiros pelo percurso, portanto elas não se preocupavam em fazer novos túneis e continuavam construindo mais formigueiros.
 
 O seu trabalho é, dada a estrutura de uma colônia e um conjunto de consultas, calcular, para cada uma das consultas, o menor caminho entre pares de formigueiros. O comprimento do caminho é a soma dos comprimentos de todos os túneis que necessitam ser visitados.
 
@@ -85,7 +85,7 @@ Para cada caso de teste, imprima uma única linha com $Q$ inteiros, os comprimen
 
 \vspace{10cm}
 
-Neste problema, é dado uma árvore com peso nas arestas. Nosso problema consiste em determinar o comprimento do menor caminho entre dois formigueiros $a$ e $b$ - em outras palavras, a soma dos pesos das arestas escolhidas para chegar de $b$ partindo de $a$. Como vimos anteriormente, dado que nosso grafo é uma árvore, só existe um caminho entre quaisquer dois vértices. Portanto, não temos que considerar vários caminhos e ter de fazer algum algoritmo ótimo que escolha o melhor deles - basta percorrer o único caminho e determinar seu comprimento.
+Neste problema, é dada uma árvore com peso nas arestas. Nosso problema consiste em determinar o comprimento do menor caminho entre dois formigueiros $a$ e $b$ - em outras palavras, a soma dos pesos das arestas escolhidas para chegar de $b$ partindo de $a$. Como vimos anteriormente, dado que nosso grafo é uma árvore, só existe um caminho entre quaisquer dois vértices. Portanto, não temos que considerar vários caminhos e ter de fazer algum algoritmo que escolha o melhor deles - basta percorrer o único caminho e determinar seu comprimento.
 
 Como estudamos, o \LCA\ entre $a$ e $b$ \textbf{sempre} estará contido nos vértices do caminho entre $a$ e $b$. Assim, podemos quebrar o problema de determinar o comprimento total de $a$ até $b$ nos seguintes subproblemas:
 
@@ -105,7 +105,7 @@ Vamos então agora analisar a árvore do exemplo da entrada do problema e a prim
 
 O \LCA\ entre os vértices $2$ e $3$ é o nó $1$. Assim, o comprimento total do caminho é o tamanho do caminho $(1, 2)$ somado ao tamanho do caminho $(1, 3)$. No caso, $9 + 7 = 16$, que é de fato a resposta para a primeira consulta.
 
-Entretanto, como podemos determinar o tamanho do caminho entre o \LCA\ e todos outros vértices de maneira eficiente? Afinal, poderíamos sempre "descer"\ na árvore a partir do \LCA\ somando os pesos das arestas - ação que custaria $O(n)$ pois no pior caso teríamos que visitar todos os vértices.
+Entretanto, como podemos determinar o tamanho do caminho entre o \LCA\ e todos outros vértices de maneira eficiente? Afinal, poderíamos sempre descer na árvore a partir do \LCA\ somando os pesos das arestas - ação que custaria $O(n)$ pois no pior caso teríamos que visitar todos os vértices.
 
 A solução para isso é semelhante ao problema de encontrar a soma dos valores em um intervalo consecutivo de números em uma lista. Suponha que temos a seguinte lista:
 
@@ -169,7 +169,7 @@ $caminho(3, 1) = soma[3] - soma[1] = 17 - 8 = 9$\\
 $caminho(2, 3) = caminho (2, 1) + caminho(3, 1) = 7 + 9 = 16$
 \end{center}
 
-Pronto! Após o pré-processamento (calcular $soma[i]$ para cada vértice) conseguimos responder cada consulta em $O(log\ n)$ - a complexidade de obter o \LCA\ entre dois vértices, já que o comprimento do caminho é obtido em $O(1)$ (fazer a subtração das somas).
+Após o pré-processamento (calcular $soma[i]$ para cada vértice), que é feito em tempo linear, conseguimos responder cada consulta em $O(log\ n)$ - a complexidade de obter o \LCA\ entre dois vértices, já que o comprimento do caminho é obtido em $O(1)$ (fazer a subtração das somas).
 
 \vspace{0.5cm}
 
@@ -192,7 +192,7 @@ O código completo (em C++) para este problema encontra-se no GitHub:
 
 \hspace{0.6cm}{\large{\textbf{Enunciado}}}\vspace{0.2cm}
 
-É dada uma árvore (um grafo conectado acíclico não direcionado) com $N$ vértices, e arestas numeradas $1, 2, 3...N-1$. Cada aresta tem um valor inteiro associado à ela, representando o seu tamanho.
+É dada uma árvore (um grafo conectado acíclico não direcionado) com $N$ vértices, e arestas numeradas $1, 2, 3...N-1$. Cada aresta tem um valor inteiro associado a ela, representando o seu tamanho.
 
 Responda perguntas das seguintes formas:
 
@@ -333,7 +333,7 @@ Desta forma, conseguimos encontrar o $k-$ésimo vértice de um caminho em $O(log
 
 \vspace{0.5cm}
 
-O código completo (em c++) para este problema encontra-se no GitHub:
+O código completo (em C++) para este problema encontra-se no GitHub:
 
 \url{https://github.com/PedroBortolli/TCC/blob/master/codes/problemas/QTREE2.cpp}
 
