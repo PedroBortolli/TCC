@@ -4,7 +4,7 @@
 
 Neste capítulo serão apresentados brevemente alguns conceitos de suma importância 
 para a compreensão do trabalho. Entretanto, já é suposto que o leitor tenha um 
-conhecimento básico sobre os temas listados a seguir. O leitor que não estiver familiarizado com tais assuntos deve buscar um texto básico, como o livro \cite{cormen}.
+conhecimento básico sobre os temas listados a seguir. O leitor que não estiver familiarizado com tais assuntos deve buscar um texto básico, como o livro introdutório a algoritmos escrito por Cormen\cite{cormen}.
 
 \section{Grafo}
 
@@ -15,14 +15,26 @@ Conjunto de vértices (também chamados de nós) conectados por arestas.
 Sequência de arestas que ligam vértices de um grafo. Em um caminho é possível 
 partir de um vértice $a$ e chegar em um vértice $b$, usando em cada passo uma aresta cujas pontas são os vértices vizinhos pertencentes ao caminho.
 
+\section{Descendente e ancestral}
+
+Um vértice $v$ é descendente de $u$ se ao percorrer o caminho de $v$ até a raiz da árvore passamos pelo vértice $u$. Neste caso também dizemos que $u$ é ancestral de $v$.
+
 \section{Árvore}
 
 Caso especial de um grafo, onde para quaisquer 2 vértices existe apenas um único caminho que os liga no grafo. Dizemos que uma árvore é enraizada se escolhemos um vértice para ser a raiz e todas as arestas partirem dele para seus descendentes (neste sentido).
 
+\section{Subárvore}
+
+Define-se como subárvore de um vértice $v$ o conjunto de vértices e arestas que são seus descendentes (incluindo o próprio vértice $v$).
+
 \section{Profundidade} 
 
 A profundidade de um vértice em uma árvore enraizada é dada pelo tamanho de seu caminho
-até a raiz - isto é, quantidade de arestas pertencente à este caminho . A profundidade da raiz é sempre 1.
+até a raiz - isto é, quantidade de arestas pertencente a este caminho . A profundidade da raiz é sempre 1.
+
+\section{Altura}
+
+A altura de uma árvore equivale à maior profundidade de algum vértice dela. Ou seja, quantos vértices estão no caminho da raiz até alguma folha da árvore.
 
 \section{Arestas direcionadas}
 

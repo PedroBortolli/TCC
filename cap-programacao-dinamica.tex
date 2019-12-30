@@ -4,11 +4,11 @@
 
 \section{Introdução}
 
-Neste capítulo apresentaremos o primeiro algoritmo de complexidade sub-polinomial ara calcular o \LCA\ entre dois vértices em uma árvore enraizada. Este algoritmo terá complexidade de tempo $O(log \n)$ por consulta. A técnica utilizada para isso é programação dinâmica, e para mais informações sobre ela consulte \cite{programacao-dinamica}. 
+Neste capítulo apresentaremos o primeiro algoritmo de complexidade sub-polinomial para calcular o \LCA\ entre dois vértices em uma árvore enraizada. Este algoritmo terá complexidade de tempo $O(log \n)$ por consulta. A técnica utilizada para isso é programação dinâmica, e para mais informações consulte o material didático elaborado por Stefano Tommasini \cite{programacao-dinamica}. 
 
 \section{Descrição}
 
-A ideia segue pré-calcular os ancestrais dos vértices para depois realizar as consultas.
+Novamente pré-computaremos os ancestrais de cada vértice para poder realizar consultas.
 
 Para cada vértice serão pré-computados os ancestrais cuja profundidade na árvore é menor do que a sua em uma potência de dois - ou seja - 1, 2, 4, 8, ... , $h$ níveis acima dele, onde $h$ é a maior potência de dois que não ultrapasse a altura da árvore. Em outras palavras, para cada vértice serão pré-calculados até $log(n)$ ancestrais diferentes.
 
@@ -21,7 +21,7 @@ Para ilustrar este pré-processamento, introduzimos a figura a seguir:
 \caption{\label{fig:arvore-6}Árvore enraizada de altura 6.}
 \end{figure}
 
-Após o pré-processamento, teríamos como os ancestrais, para os vértices 12 e 15:
+Após o pré-processamento, teríamos como os ancestrais, para os vértices 11 e 15:
 
 \begin{itemize}
     \item Vértice 11
@@ -33,7 +33,7 @@ Após o pré-processamento, teríamos como os ancestrais, para os vértices 12 e
     Altura relativa & -1 & -2 & -4 \\ \hline
     Ancestral       & 7 & 4  & 1 \\ \hline
     \end{tabular}
-    \caption{Ancestrais relativos do vértice 12}
+    \caption{Ancestrais relativos do vértice 11}
     \end{table}
     
     \item Vértice 15
@@ -83,7 +83,7 @@ Voltando à figura \ref{fig:arvore-6}, vamos simular os passos completos para en
 \begin{itemize}
     \item Vértices 12 e 15 não estão na mesma altura. O vértice 12 é mais profundo, então vamos subir em direção à raiz.
     \item A diferença das profundidades de 12 e 15 é de um. Então agora seu novo valor é $ancestral_{12}(1) =$ vértice 11.
-    \item Agora, vamos determinar qual é o o maior inteiro $i$ tal que $ancestral_{11}(i) \neq ancestral_{15}(i)$. Testando as potências de dois, da maior para a menor, tentaremos primeiro subir 4 níveis - o que resultaria em ambos irem até o vértice $1$. Então, testamos 2 níveis - o que resulta nos vértices $4$ e $6$, respectivamente. Como são distintos, vamos para eles. Finalmente, tentamos subir 1 nível - o que resulta nos vértices $2$ e $3$ - ainda distintos. Vamos para eles.
+    \item Agora, vamos determinar qual é o maior inteiro $i$ tal que $ancestral_{11}(i) \neq ancestral_{15}(i)$. Testando as potências de dois, da maior para a menor, tentaremos primeiro subir 4 níveis - o que resultaria em ambos irem até o vértice $1$. Então, testamos 2 níveis - o que resulta nos vértices $4$ e $6$, respectivamente. Como são distintos, vamos para eles. Finalmente, tentamos subir 1 nível - o que resulta nos vértices $2$ e $3$ - ainda distintos. Vamos para eles.
     \item Finalmente, sabemos que os últimos dois vértices antes do \LCA\ são $2$ e $3$, então basta retornar o pai de qualquer um deles para obter o \LCA: o vértice $1$.
 \end{itemize}
 
@@ -109,7 +109,7 @@ Primeiro, para o pré-processamento, vamos apresentar a seguinte recorrência:
 
 \vspace{0.1cm}
 
-Segue o código que preenche a matriz $pd$ linha a linha:
+Para preencher a matriz $anc$, linha a linha ($logNiveis$ = logaritmo da altura da árvore):
 
 \begin{algorithm}[H]
 \caption{Cálculo da matriz de programação dinâmica ($pd$)}
@@ -128,6 +128,8 @@ Segue o código que preenche a matriz $pd$ linha a linha:
 \end{algorithmic}
 \end{algorithm}
 
+\vspace{-0.1cm}
+
 Agora podemos escrever o código que responderá as consultas de \LCA\ entre $a$ e $b$:
 
 
@@ -135,13 +137,13 @@ Agora podemos escrever o código que responderá as consultas de \LCA\ entre $a$
 \caption{Obtenção do \LCA}
 \begin{algorithmic}[1]
 \Function{\textsc{LCA\_PD}}{a,\ b}
-    \If{$prof[b] < prof[a]$}
+    \If{$profundidade[a] < profundidade[b]$}
         \State $troca(a, b)$
     \EndIf
     \State $i \rec logNiveis$
     \While { $i \geq 0$}
-        \If{$prof[bAtual] - 2^i \geq prof[a]$}
-            \State $b \rec anc[b][i]$
+        \If{$profundidade[a] - 2^i \geq profundidade[b]$}
+            \State $a \rec anc[a][i]$
         \EndIf
         \vspace{-0.2cm}
         \State $i \rec i - 1$
@@ -171,7 +173,7 @@ Agora podemos escrever o código que responderá as consultas de \LCA\ entre $a$
 
 Neste algoritmo é feito o pré-processamento da recorrência apresentada na seção 5.3.
 
-Na primeira iteração do laço mais externo são calculados os $ancestrais\ 2^0$ de cada vértice (o caso base da recorrência). Note que tal ancestral é seu pai imediato, então podemos facilmente determinar $pd[x][0]$ para todo vértice $x$. Isto é feito na linha 5 do código.
+Na primeira iteração do laço mais externo são calculados os $ancestrais\ 2^0$ de cada vértice (o caso base da recorrência). Note que tal ancestral é seu pai imediato, então podemos facilmente determinar $anc[x][0]$ para todo vértice $x$. Isto é feito na linha 5 do código.
 
 Em seguida, da segunda iteração em diante do laço mais externo são obtidos os ancestrais "não diretos"\ (isto é, um ancestral que não é o pai imediato de um nó). Podemos notar que $ancestral\ 2^i$ de um vértice $v$ é o $ancestral\ 2^{i-1}$ do $ancestral\ 2^{i-1}$ de $v$. Afinal, $2^{i-1} + 2^{i-1} = 2^i$, e por este motivo podemos fazer com que no caminho de um vértice até o seu ancestral em questão visitemos este vértice intermediário. Então, concluímos que a linha 7 produz o resultado correto de $pd[vertice][nivel]$, já que todos os ancestrais $nivel - 1$ já foram computados e só dependemos deles nesta etapa.
 
@@ -180,13 +182,13 @@ Em seguida, da segunda iteração em diante do laço mais externo são obtidos o
 
 Agora vamos analisar a corretude do algoritmo de obtenção do \LCA\ baseado nos valores pré-computados durante a execução do algoritmo 6.
 
-Nas linhas 2 e 3 os vértices $a$ e $b$ são trocados caso o vértice $a$ seja mais profundo. O motivo disso é que queremos assumir que a profundidade do vértice $b$ sempre seja maior ou igual do que a profundidade do vértice $a$.
+Nas linhas 2 e 3 os vértices $a$ e $b$ são trocados caso o vértice $b$ seja mais profundo. O motivo disso é que queremos assumir que a profundidade do vértice $a$ sempre seja maior ou igual do que a profundidade do vértice $b$.
 
-No laço da linha 5 percorremos o caminho do vértice $b$ até a raiz, subindo este vértice até o nó de seu caminho cuja profundidade seja a mesma do vértice $a$. Sendo $logNiveis$ o valor do $log$ da altura da árvore, percorremos este laço de maneira decrescente começando em $logNiveis$. Nas linhas 6 e 7 atualizamos o valor atual do vértice $b$ caso ao subir $2^i$ níveis a profundidade do novo nó obtido não é menor do que a do vértice $a$ - afinal, queremos garantir que no final do laço ambos estejam no mesmo nível. Como qualquer número inteiro pode ser representado como uma soma de potências de dois, garantimos que ao final da iteração teremos conseguido com que $profundidade[b] = profundidade[a]$.
+No laço da linha 5 percorremos o caminho do vértice $b$ até a raiz, subindo este vértice até o nó de seu caminho cuja profundidade seja a mesma do vértice $a$. Sendo $logNiveis$ o valor do $log$ da altura da árvore, percorremos este laço de maneira decrescente começando em $logNiveis$. Nas linhas 6 e 7 atualizamos o valor atual do vértice $b$ caso ao subir $2^i$ níveis a profundidade do novo nó obtido não seja menor do que a do vértice $a$ - afinal, queremos garantir que no final do laço ambos estejam no mesmo nível. Como qualquer número inteiro pode ser representado como uma soma de potências de dois, garantimos que ao final da iteração teremos $profundidade[b] = profundidade[a]$.
 
 Nas linhas 9 e 10 é verificado se $a = b$. Como $a$ e $b$ agora estão na mesma altura da árvore, eles podem coincidir (ou seja, $b$ estava na subárvore de $a$) - concluindo que obtivemos o \LCA\ e podemos parar o algoritmo.
 
-Caso a execução do código alcance a linha 11, sabemos então que $a$ e $b$ ainda não se encontraram (e portanto ainda não sabemos quem é o \LCA). No laço da linha 11 iteramos de $logNiveis$ até 0 para verificar todos os $ancestrais\ 2^i$ de $a$ e $b$ em ordem decrescente. Na linha 12 é verificado se $ancestral_a\ 2^i$ difere de $ancestral_b\ 2^i$. Caso isso se confirme, sabemos que se for dado um pulo de tamanho $2^i$ ainda não teremos encontrado o \LCA, já que se se tais ancestrais fossem iguais poderíamos ter encontrado o \LCA\ ou qualquer vértice acima do \LCA\ no caminho da raiz. Então, atualizamos ambos $a$ e $b$ para seus respectivos ancestrais e repetimos isso até o laço acabar. No final deste laço saberemos que $a$ e $b$ estarão nos vértices menos profundos dos seus caminhos até a raiz que ainda não são o \LCA\ entre eles (pelo mesmo argumento de que conseguimos chegar em qualquer altura dando pulos de tamanho potência de dois). Assim, basta retornar o pai de qualquer um deles que este será o \LCA\ de fato.
+Caso a execução do código alcance a linha 11, sabemos então que $a$ e $b$ ainda não se encontraram (e portanto ainda não sabemos quem é o \LCA). No laço da linha 11 iteramos de $logNiveis$ até 0 para verificar todos os $ancestrais\ 2^i$ de $a$ e $b$ em ordem decrescente. Na linha 12 é verificado se $ancestral_a\ 2^i$ difere de $ancestral_b\ 2^i$. Caso isso se confirme, sabemos que se for dado um pulo de tamanho $2^i$ ainda não teremos encontrado o \LCA, já que se tais ancestrais fossem iguais poderíamos ter encontrado o \LCA\ ou qualquer vértice acima do \LCA\ no caminho da raiz. Então, atualizamos ambos $a$ e $b$ para seus respectivos ancestrais e repetimos isso até o laço acabar. No final deste laço saberemos que $a$ e $b$ estarão nos vértices menos profundos dos seus caminhos até a raiz que ainda não são o \LCA\ entre eles (pelo mesmo argumento de que conseguimos chegar em qualquer altura dando pulos de tamanho potência de dois). Assim, basta retornar o pai de qualquer um deles que este será o \LCA\ de fato.
 
 \section{Complexidade}
 

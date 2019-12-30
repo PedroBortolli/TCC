@@ -10,7 +10,7 @@ Na seção anterior desenvolvemos um algoritmo simples que percorre, no pior cas
 
 A ideia do algoritmo que vamos desenvolver é a mesma descrita no Algoritmo 3. Isto é, para dois vértices $a$ e $b$ ainda vamos percorrer seus caminhos até a raiz para determinar o seu \LCA.
 
-A diferença é que agora não vamos potencialmente visitar todos os vértices do caminho até encontrar o \LCA. Agora, vamos dividir os vértices da árvore em "baldes", para que inicialmente um pulo entre dois membros do caminho seja de um vértice de um balde para um vértice de outro balde, ao invés de ir para o seu pai direto. Assim, um pulo não tem mais tamanho 1, mas sim $b$, onde $b$ é a altura de um balde.
+A diferença é que agora não vamos potencialmente visitar todos os vértices do caminho até encontrar o \LCA. Agora, vamos dividir os vértices da árvore em "baldes", para que inicialmente um pulo entre dois membros do caminho seja de um vértice de um balde para um vértice de outro balde, ao invés de ir para o seu pai direto. Assim, um pulo não tem mais tamanho 1, mas sim $p$, onde $p$ é a altura de um balde.
 
 \subsection{Detalhando o algoritmo}
 
@@ -123,9 +123,9 @@ O algoritmo 4 executa uma simples busca em profundidade com operações de tempo
 
 Seja $q$ a quantidade de baldes existentes. No laço das linhas 2-5 do algoritmo 5, sendo $q_a$ e $q_b$ as quantidades de baldes acima de $a$ e $b$, respectivamente, em seus caminhos até a raiz, podemos dizer que são executadas $q_a + q_b$ operações. No pior caso, $q_a = q_b = q$, e portanto essa etapa do algoritmo é $O(q)$.
 
-A chamada de LCA\_Simples tem complexidade $O(h)$, onde $h$ é a altura da árvore (no pior caso a quantidade de vértices $n = h$, então é correto assumir tal complexidade). Entretanto, ao dividir nossa árvore em baldes, garantimos que qualquer balde terá altura $h = alturaBalde$.
+A chamada de LCA\_Simples tem complexidade $O(h)$, onde $h$ é a altura da árvore (no pior caso a quantidade de vértices $n = h$, então é correto assumir tal complexidade). Entretanto, ao dividir nossa árvore em baldes, garantimos que qualquer balde terá altura $h = alturaBalde = p$.
 
-Assim, denotando $p = alturaBalde$, o algoritmo 5 tem complexidade de tempo $O(p + q)$. Dado que os valores $p$ e $q$ dependem diretamente da condição de inserção de um vértice em um balde, analisemos agora como fazer isso para atingir a melhor complexidade possível.
+Assim, o algoritmo 5 tem complexidade de tempo $O(p + q)$. Dado que os valores $p$ e $q$ dependem diretamente da condição de inserção de um vértice em um balde, analisemos agora como fazer isso para atingir a melhor complexidade possível.
 
 \vspace{0.8cm}
 

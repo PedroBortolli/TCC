@@ -192,7 +192,7 @@ O código completo (em C++) para este problema encontra-se no GitHub:
 
 \hspace{0.6cm}{\large{\textbf{Enunciado}}}\vspace{0.2cm}
 
-É dada uma árvore (um grafo conectado acíclico não direcionado) com $N$ vértices, e arestas numeradas $1, 2, 3...N-1$. Cada aresta tem um valor inteiro associado a ela, representando o seu tamanho.
+É dada uma árvore (um grafo conectado acíclico não direcionado) com $N$ vértices e $N-1$ arestas numeradas $1, 2, 3...N-1$. Cada aresta tem um valor inteiro associado a ela, representando o seu tamanho.
 
 Responda perguntas das seguintes formas:
 
@@ -207,7 +207,7 @@ A primeira linha da entrada contém um inteiro $t$, o número de casos de teste 
 
 Na primeira linha é dado um inteiro $N$ ($N \leq 10000$)
 
-Nas pŕoximas $N-1$ linhas, a $i-$ésima linha descreve a $i-$ésima aresta: três inteiros $a$ $b$ $c$ denotam uma aresta entre $a$ e $b$ com custo $c$ ($c \leq 100000$).
+Nas próximas $N-1$ linhas, a $i-$ésima linha descreve a $i-$ésima aresta: três inteiros $a$ $b$ $c$ denotam uma aresta entre $a$ e $b$ com custo $c$ ($c \leq 100000$).
 
 As próximas linhas contêm perguntas da forma \textbf{"DIST a b"} ou \textbf{"KTH a b k"}
 
@@ -265,7 +265,7 @@ Neste problema queremos duas coisas:
 
 A primeira consulta já foi analisada no problema anterior desta seção, então não discutiremos sobre ela novamente aqui. O foco agora é descobrir como responder o segundo tipo de consulta de forma ótima - isto é - melhor do que o jeito trivial $O(n)$ de percorrer o caminho inteiro vértice a vértice.
 
-Como estudamos no capítulo 5, sabemos que conseguimos chegar em qualquer vértice $v$ a partir de um nó fazendo sucessivos pulos de "tamanho potência de dois". Em outras palavras, qualquer número pode ser representado como uma soma de potências de dois diferentes.
+Como estudamos no capítulo 5, sabemos que conseguimos chegar em qualquer vértice $v$ a partir de um nó fazendo sucessivos pulos de "tamanho potência de dois". Em outras palavras, qualquer número pode ser representado como uma soma de distintas potências de dois.
 
 Portanto, a sugestão para resolver este problema é utilizar o método de programação dinâmica para obter a resposta: pré-calcular os ancestrais 1, 2, 4, 8, etc níveis acima de todo vértice da árvore.
 

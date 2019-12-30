@@ -2,20 +2,20 @@
 \chapter{Passeio de Euler}
 \label{cap:passeio-euler}
 
-\section{Introdução}
+
 
 Agora que vimos um algoritmo eficiente que resolve o problema do \LCA\, vamos explorar uma outra técnica que tem o mesmo tempo de complexidade. Neste capítulo estudaremos um algoritmo capaz de resolver problemas um pouco mais complexos em que, por exemplo, é necessário atualizar o valor de um nó da árvore rapidamente (diferente dos outros algoritmos em que a árvore deve ser sempre estática - isto é - sem modificações).
 
 
 \section{Descrição}
 
-Vamos imaginar que temos uma função $F(x, y)$ que devolve todos os vértices no caminho de $a$ para $b$. Para melhor ilustrar isso, considere a seguinte árvore enraizada:
+Vamos imaginar que temos uma função $F(a, b)$ que devolve todos os vértices no caminho de $a$ para $b$. Para melhor ilustrar isso, considere a seguinte árvore enraizada:
 
 \vspace{0.5cm}
 
 \begin{figure}[htb]
 \begin{center}
-\includegraphics[width=5.75cm]{images/graph_euler.png}
+\includegraphics[width=7cm]{images/graph_euler.png}
 \end{center}
 \caption{\label{fig:arvore-euler}Árvore enraizada de 6 vértices}
 \end{figure}
@@ -108,7 +108,7 @@ Vamos simular o resultado da consulta nessa estrutura para os vértices $4$ e $5
 
 Por fim, basta verificar qual desses vértices possui a menor altura - este será o \LCA. No exemplo, o vértice com tal propriedade é $2$, e de fato podemos verificar que ele é o \LCA\ entre os nós $4$ e $5$.
 
-Note que podem ser retornados vértices que não pertencem ao caminho de entre os dois nós consultados. No exemplo, o vértice $6$ não está no caminho entre $4$ e $5$ mas está contido no intervalo. Entretanto, podemos observar que a profundidade dele é maior do que ambos $4$ e $5$ (afinal, ele é filho de $4$) - o que nos diz que sua presença no intervalo não faz diferença para a obtenção do \LCA. Provaremos o porquê deste algoritmo sempre funcionar na seção 6.6 deste capítulo.
+Note que podem ser retornados vértices que não pertencem ao caminho entre os dois nós consultados. No exemplo, o vértice $6$ não está no caminho entre $4$ e $5$ mas está contido no intervalo. Entretanto, podemos observar que a profundidade dele é maior do que a de ambos $4$ e $5$ (afinal, ele é filho de $4$) - o que nos diz que sua presença no intervalo não faz diferença para a obtenção do \LCA. Provaremos o porquê deste algoritmo sempre funcionar na seção 6.6 deste capítulo.
 
 \section{Otimização com árvore de segmentos}
 
